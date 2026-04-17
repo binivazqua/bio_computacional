@@ -1,10 +1,12 @@
 # Shared setup for sequence analysis reports.
 
-knitr::opts_chunk$set(
-  echo = TRUE,
-  warning = FALSE,
-  message = FALSE
-)
+if (requireNamespace("knitr", quietly = TRUE)) {
+  knitr::opts_chunk$set(
+    echo = TRUE,
+    warning = FALSE,
+    message = FALSE
+  )
+}
 
 load_if_available <- function(pkg) {
   if (!requireNamespace(pkg, quietly = TRUE)) {
@@ -21,29 +23,6 @@ load_if_available <- function(pkg) {
     library(pkg, character.only = TRUE)
   )
 }
-
-required_packages <- c(
-  "seqinr",
-  "ggplot2",
-  "dplyr",
-  "tidyr",
-  "ape",
-  "adegenet",
-  "ggtree",
-  "viridis",
-  "ggmsa"
-)
-
-invisible(lapply(required_packages, load_if_available))
-
-optional_packages <- c("DECIPHER", "Biostrings")
-
-optional_package_status <- vapply(
-  optional_packages,
-  requireNamespace,
-  logical(1),
-  quietly = TRUE
-)
 
 get_script_path <- function() {
   frame_files <- vapply(sys.frames(), function(x) {
@@ -62,17 +41,49 @@ get_script_path <- function() {
 setup_script <- get_script_path()
 classwork_dir <- dirname(setup_script)
 assets_dir <- file.path(classwork_dir, "assets")
+sars_assets_dir <- file.path(assets_dir, "secuencias_sars")
 
 if (!dir.exists(assets_dir)) {
   stop("The assets directory was not found at 'classwork/assets'.", call. = FALSE)
 }
 
-knitr::opts_knit$set(root.dir = assets_dir)
+if (requireNamespace("knitr", quietly = TRUE)) {
+  knitr::opts_knit$set(root.dir = assets_dir)
+}
+
+required_packages <- c(
+  "seqinr",
+  "ggplot2",
+  "dplyr",
+  "tidyr",
+  "ape"
+)
+
+invisible(lapply(required_packages, load_if_available))
+
+optional_packages <- c(
+  "DECIPHER",
+  "Biostrings",
+  "adegenet",
+  "ggtree",
+  "viridis",
+  "ggmsa"
+)
+
+optional_package_status <- vapply(
+  optional_packages,
+  requireNamespace,
+  logical(1),
+  quietly = TRUE
+)
 
 required_files <- c("mexico.fasta", "wuhan.fasta", "francia.fasta")
-missing_files <- required_files[
-  !file.exists(file.path(assets_dir, required_files))
-]
+has_sequence_file <- function(filename) {
+  file.exists(file.path(assets_dir, filename)) ||
+    file.exists(file.path(sars_assets_dir, filename))
+}
+
+missing_files <- required_files[!vapply(required_files, has_sequence_file, logical(1))]
 
 if (length(missing_files) > 0) {
   stop(
