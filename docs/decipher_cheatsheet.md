@@ -1,4 +1,4 @@
-# 🧬 Bio Computacional en VS Code
+# 🧬 DECIPHER en VS Code
 
 **Recursos útiles para trabajar desde command line, si no tienes R Studio.**
 

@@ -1,8 +1,8 @@
-# 🧬 DECIPHER en Español - Para Estudiantes
+# 🧬 DECIPHER en VS Code
 
-**¡Bienvenido! Aquí está TODO lo que necesitas.**
+**Recursos útiles para trabajar desde command line, si no tienes R Studio.**
 
----
+## _Biniza Vázquez A01737294_
 
 ## Documentos Disponibles
 
