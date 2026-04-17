@@ -1,6 +1,8 @@
-# DECIPHER en VS Code - Guía Rápida para Estudiantes
+# 🧬 Bio Computacional en VS Code
 
-**¡Dale! Aquí va todo lo que necesitas para no andar perdido.**
+**Recursos útiles para trabajar desde command line, si no tienes R Studio.**
+
+_Biniza Vázquez A01737294_
 
 ## Instalación (Solo una vez)
 
@@ -167,7 +169,7 @@ fasta_files <- list.files("data/", pattern = "\\.fasta$", full.names = TRUE)
 for (file in fasta_files) {
   seqs <- readDNAStringSet(file)
   aligned <- AlignSeqs(seqs)
-  
+
   # Guarda cada resultado
   base_name <- sub(".fasta", "", basename(file))
   saveRDS(aligned, paste0("results/", base_name, "_aligned.rds"))
@@ -244,14 +246,14 @@ tryCatch({
 
 ## Atajos de Teclado en VS Code (Mac)
 
-| Qué hacer | Teclas |
-|--------|---|
-| Ejecutar una línea | Cmd + Enter |
+| Qué hacer                 | Teclas              |
+| ------------------------- | ------------------- |
+| Ejecutar una línea        | Cmd + Enter         |
 | Ejecutar bloque de código | Cmd + Shift + Enter |
-| Ejecutar todo el script | Cmd + Shift + R |
-| Enviar a terminal | Ctrl + Alt + Enter |
-| Abrir/cerrar terminal | Ctrl + ` |
-| Buscar | Cmd + F |
+| Ejecutar todo el script   | Cmd + Shift + R     |
+| Enviar a terminal         | Ctrl + Alt + Enter  |
+| Abrir/cerrar terminal     | Ctrl + `            |
+| Buscar                    | Cmd + F             |
 
 ---
 
@@ -312,13 +314,13 @@ vmatchPattern("ATG", readDNAStringSet("seqs.fasta"))
 
 ## Cuándo Usar Qué Herramienta
 
-| Necesitas | Usa | Alternativa |
-|------|----------|-----------|
-| Leer FASTA | `readDNAStringSet()` ✅ | `read.fasta()` |
-| Alinear secuencias | **DECIPHER** ⭐ | MUSCLE, MAFFT |
-| Calcular distancia | `dist.hamming()` | `dist.dna()` |
-| Hacer árboles | `nj()`, `upgma()` (ape) | Figtree (programa externo) |
-| Gráficos lindos | `ggtree()`, `ggmsa()` | Seqinr básico |
+| Necesitas          | Usa                     | Alternativa                |
+| ------------------ | ----------------------- | -------------------------- |
+| Leer FASTA         | `readDNAStringSet()` ✅ | `read.fasta()`             |
+| Alinear secuencias | **DECIPHER** ⭐         | MUSCLE, MAFFT              |
+| Calcular distancia | `dist.hamming()`        | `dist.dna()`               |
+| Hacer árboles      | `nj()`, `upgma()` (ape) | Figtree (programa externo) |
+| Gráficos lindos    | `ggtree()`, `ggmsa()`   | Seqinr básico              |
 
 ---
 
@@ -346,6 +348,7 @@ plot(tree)
 ## Pro Tips de Estudiante
 
 💾 **Guarda frecuentemente**: Cada 5 minutos, hazlo
+
 ```r
 save(aligned, tree, file = "my_analysis.RData")
 ```
@@ -362,11 +365,12 @@ save(aligned, tree, file = "my_analysis.RData")
 
 ## Cuando Estés Atascado
 
-1. **Busca primero en:** 
+1. **Busca primero en:**
    - `DECIPHER_FAQ_REFERENCE_ES.md` (preguntas frecuentes)
    - `DECIPHER_VS_CODE_GUIDE.md` (guía completa)
 
 2. **Ejecuta esto:**
+
    ```r
    ?AlignSeqs  # Lee la ayuda de cualquier función
    ```
@@ -377,7 +381,7 @@ save(aligned, tree, file = "my_analysis.RData")
 
 ---
 
-**¡Imprime esto y pégalo en tu monitor!** 
+**¡Imprime esto y pégalo en tu monitor!**
 
 Cada sección está diseñada para ser copiar-pega. Modifica las rutas de los archivos según TUS carpetas y listo.
 
