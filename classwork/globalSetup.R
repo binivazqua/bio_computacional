@@ -77,7 +77,7 @@ optional_package_status <- vapply(
   quietly = TRUE
 )
 
-required_files <- c("mexico.fasta", "wuhan.fasta", "francia.fasta")
+required_files <- c("classwork/assets/secuencias_fasta/mexico.fasta", "classwork/assets/wuhan.fasta", "classwork/assets/secuencias_fasta/francia.fasta")
 has_sequence_file <- function(filename) {
   file.exists(file.path(assets_dir, filename)) ||
     file.exists(file.path(sars_assets_dir, filename))
