@@ -1,0 +1,24 @@
+{
+  "r.rterm.mac": "/usr/local/bin/R",
+  "r.lsp.enabled": true,
+  "r.plot.useHttpgd": true,
+
+  // Always use active terminal
+  "r.alwaysUseActiveTerminal": true,
+
+  // Bracketed paste (prevents weird paste issues)
+  "r.bracketedPaste": true,
+
+  // Session watcher (shows objects, environment)
+  "r.sessionWatcher": true,
+
+  "[r]": {
+    "editor.defaultFormatter": "REditorSupport.r",
+    "editor.formatOnSave": true
+  },
+  "[rmd]": {
+    "editor.defaultFormatter": "REditorSupport.r",
+    "editor.formatOnSave": true
+  }
+
+}

@@ -1,0 +1,182 @@
+---
+title: "Advanced DNA Sequence Analysis Report"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r setup, include=FALSE}
+source(file.path(dirname(knitr::current_input()), "globalSetup.R"))
+```
+
+# Introduction
+
+This report compares three DNA sequences from Mexico, Wuhan, and Francia.
+It summarizes genome metrics, identifies pairwise differences, visualizes
+mutation patterns, and builds a simple phylogenetic tree.
+
+# 1. Load Data
+
+```{r load-data}
+mexico <- read.fasta(file.path(assets_dir, "mexico.fasta"))[[1]]
+wuhan <- read.fasta(file.path(assets_dir, "wuhan.fasta"))[[1]]
+francia <- read.fasta(file.path(assets_dir, "francia.fasta"))[[1]]
+```
+
+# 2. Basic Metrics
+
+The table below summarizes sequence length and GC content for each sample.
+
+```{r basic-metrics}
+summary_df <- data.frame(
+  Sample = c("Mexico", "Wuhan", "Francia"),
+  Length = c(length(mexico), length(wuhan), length(francia)),
+  GC = c(GC(mexico), GC(wuhan), GC(francia)) * 100
+)
+
+summary_df
+```
+
+# 3. Mutation Analysis
+
+This section computes pairwise differences between sequences and stores the
+positions where the nucleotides differ.
+
+```{r mutation-analysis}
+compare_sequences <- function(seq1, seq2, name1, name2) {
+  min_len <- min(length(seq1), length(seq2))
+  diffs <- seq1[1:min_len] != seq2[1:min_len]
+
+  data.frame(
+    Position = which(diffs),
+    Seq1 = seq1[1:min_len][diffs],
+    Seq2 = seq2[1:min_len][diffs],
+    Comparison = paste(name1, "vs", name2)
+  )
+}
+
+mex_wuh <- compare_sequences(mexico, wuhan, "Mexico", "Wuhan")
+mex_fra <- compare_sequences(mexico, francia, "Mexico", "Francia")
+wuh_fra <- compare_sequences(wuhan, francia, "Wuhan", "Francia")
+
+mutations <- bind_rows(mex_wuh, mex_fra, wuh_fra)
+
+head(mutations)
+```
+
+# 4. Mutation Density Plot
+
+The histogram shows how mutation positions are distributed along the genome.
+
+```{r mutation-density-plot}
+ggplot(mutations, aes(x = Position)) +
+  geom_histogram(binwidth = 500, fill = "steelblue", color = "white") +
+  theme_minimal() +
+  labs(
+    title = "Mutation Density Across Genome",
+    x = "Genome Position",
+    y = "Count"
+  )
+```
+
+# 5. Position-wise Variation Map
+
+This plot marks nucleotide mismatches between the Mexico and Wuhan sequences.
+
+```{r variation-map}
+variation_vector <- function(seq1, seq2) {
+  min_len <- min(length(seq1), length(seq2))
+  as.numeric(seq1[1:min_len] != seq2[1:min_len])
+}
+
+var_mex_wuh <- variation_vector(mexico, wuhan)
+
+plot(
+  var_mex_wuh,
+  type = "l",
+  main = "Variation Map: Mexico vs Wuhan",
+  ylab = "Mutation (1 = different)",
+  xlab = "Position"
+)
+```
+
+# 6. Distance Matrix
+
+The matrix below contains the number of nucleotide differences between each
+pair of sequences.
+
+```{r distance-matrix}
+seqs <- list(mexico, wuhan, francia)
+sample_names <- c("Mexico", "Wuhan", "Francia")
+
+dist_matrix <- matrix(0, nrow = 3, ncol = 3)
+rownames(dist_matrix) <- sample_names
+colnames(dist_matrix) <- sample_names
+
+for (i in seq_along(seqs)) {
+  for (j in seq_along(seqs)) {
+    min_len <- min(length(seqs[[i]]), length(seqs[[j]]))
+    dist_matrix[i, j] <- sum(seqs[[i]][1:min_len] != seqs[[j]][1:min_len])
+  }
+}
+
+dist_matrix
+```
+
+# 7. Phylogenetic Tree
+
+The neighbor-joining tree provides a simple view of sequence similarity.
+
+```{r phylogenetic-tree}
+dist_obj <- as.dist(dist_matrix)
+tree <- nj(dist_obj)
+
+plot(tree, main = "Phylogenetic Tree")
+```
+
+# 8. Optional Sequence Alignment
+
+If you want to perform a formal alignment, you can use the optional code below.
+It is disabled by default because it requires the `DECIPHER` package.
+
+```{r optional-alignment, eval=FALSE}
+if (!all(optional_package_status[c("DECIPHER", "Biostrings")])) {
+  stop("Install 'DECIPHER' and 'Biostrings' to run the alignment section.")
+}
+
+dna_set <- Biostrings::DNAStringSet(c(
+  Mexico = paste(mexico, collapse = ""),
+  Wuhan = paste(wuhan, collapse = ""),
+  Francia = paste(francia, collapse = "")
+))
+
+alignment <- DECIPHER::AlignSeqs(dna_set)
+
+DECIPHER::BrowseSeqs(alignment)
+```
+
+# 9. Reverse Complement Utility
+
+This helper function returns the reverse complement of a DNA sequence.
+
+```{r reverse-complement}
+reverse_complement <- function(seq) {
+  rev(comp(seq))
+}
+```
+
+# 10. Interpretation Guide
+
+- Mutation clusters may suggest possible hotspots.
+- Low pairwise distances indicate closely related strains.
+- Tree topology provides a simple view of evolutionary relationships.
+- GC content can be used as a rough indicator of genome stability.
+
+# 11. Session Info
+
+```{r session-info}
+sessionInfo()
+```

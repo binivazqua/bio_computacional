@@ -1,0 +1,184 @@
+---
+title: "Ejercicios Básicos de R"
+author: "Biniza Verónica Vázquez Moreno | a01737294, Imanol Benitez Castro | a01821115"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+## Ejercicio 1
+
+Crear un vector x con los datos 10, 11, 13, −1, 6,3
+
+```{r}
+x <- c(10, 11, 13, -1, 6, 3)
+```
+
+## Ejercicio 2
+
+Calcular estadísticas simples:
+
+#### Media
+```{r}
+media_x <- mean(x)
+media_x
+```
+
+#### Desviación estándar
+```{r}
+desviacion_x <- sd(x)
+desviacion_x
+```
+#### Varianza
+```{r}
+vari_x <- var(x)
+vari_x
+```
+
+### Guardar los resultados
+Crear un objeto (vector) con el nombre est.x en el que guardar los 3 estadísticos.
+
+```{r}
+est.x <- c(media_x, desviacion_x, vari_x)
+est.x
+```
+
+### Forma compacta:
+```{r}
+vec <- c(3, 6, -9, 8, 5)
+est <- c(mean(vec), sd(vec), var(vec))
+est
+```
+
+## Ejercicio 3
+Escribe un programa R para crear una secuencia de números del 20 al 50.
+
+```{r}
+# opción 1: funciones
+sec_1 <- seq(20, 50)
+# opción 2: usando operadores, como en python o matlab
+sec_1_2 <- 20:50
+```
+
+Encuentre la
+media de los números del 20 al 60.
+
+```{r}
+# primero, crear secuencia.
+sec_2 <- seq(20, 60)
+mean(sec_2)
+``` 
+
+Encontrar la suma de los números del 51 al 91. 
+```{r}
+sec_3 <- seq(51, 91)
+sum(sec_3)
+```
+
+## Ejercicio 4
+
+Crear un vector que contenga 10 valores enteros aleatorios entre
+-100 y +50
+```{r}
+# usamos la función sample(), aunque también se puede usar runif() o rnorm() para generar números aleatorios.
+sample(-100:50, 10, replace = TRUE) # replace = TRUE permite repetir números.
+```
+
+## Ejercicio 5
+Obtener los primeros 10 números de Fibonacci
+
+```{r}
+fb <- numeric(10)
+fb[1] <- fb[2] <- 1 # cambié el nombre de la variable, producía un name error.
+
+for (i in 3:10) { # sintaxis similar a python.
+    fb[i] <- fb[i - 1] + fb[i - 2]
+}
+
+fb
+```
+
+Encontrar el valor máximo y mínimo de un vector dado. Debes
+probar con:
+
+a) c(10, 20, 30, 4, 50, -60)
+b) c(10, 20, 30, 4, 50, -60)
+
+*Es el mismo vector*.
+```{r}
+vec_1 <- c(10, 20, 30, 4, 50, -60)
+max_vec_1 <- max(vec_1)
+min_vec_1 <- min(vec_1)
+max_vec_1
+min_vec_1
+```
+
+## Ejercicio 7
+Escribe una función R para multiplicar dos vectores de tipo entero y longitud n, de la misma
+longitud ambos.
+
+```{r}
+# el nombre de la función es "multiplica"
+multiplica <- function(vec_a, vec_b) {
+    # verificar longitud.
+    if (length(vec_a) != length(vec_b)) {
+        stop("Los vectores deben tener la misma longitud.")
+    }
+    # multiplicar elemento por elemento.
+    resultado <- vec_a * vec_b
+    return(resultado)
+}
+
+# línea que nos da el ejercicio
+multiplica(c(10, 20), c(3, 4))
+```
+
+## Ejercicio 8
+Escribe una función R para contar el valor específico en un vector dado.
+```{r}
+cuenta <- function(vec, valor) {
+    c <- sum(vec == valor)
+    return(c)
+}
+
+# ejecutamos con línea del ejercicio.
+cuenta(c(10, 20, 10, 7, 24, 7, 5), 7)
+```
+
+Otra Opción con variable de conteo.
+
+```{r}
+aleatorio <- c(sample(-100:50, 10))
+
+cuenta <- function(v, n) {
+    contar <- 0
+    for (i in v) {
+        if (i == n) {
+            contar <- contar + 1
+        }
+    }
+    contar
+}
+
+cuenta(aleatorio, 5)
+```
+
+## Ejercicio 9
+Escribe una función en R para extraer cada enésimo elemento de un vector dado. 
+
+```{r}
+enesimo <- function(vec, n) {
+    en_vec <- numeric()
+    # función seq() también se puede usar para esto, pero aquí lo hacemos con un ciclo for para practicar.
+    for (i in seq(vec[1], length(vec), by = n)) {
+        en_vec <- c(en_vec, vec[i])
+    }
+
+    return(en_vec)
+}
+```
+
+Probamos con caso del ejercicio.
+```{r}
+v <- 1:100
+enesimo(v, 5)
+```

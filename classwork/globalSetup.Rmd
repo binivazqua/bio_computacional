@@ -1,0 +1,77 @@
+---
+title: "Global Setup for Viral Sequence Analysis"
+author: "Your Name"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+source(file.path(dirname(knitr::current_input()), "globalSetup.R"))
+```
+
+# Shared Setup Overview
+
+This document loads the shared analysis setup used by the DNA sequence report.
+It validates package availability, sets the knitting root directory, and checks
+that the FASTA files exist in `classwork/assets`.
+
+# Package Status
+
+```{r package-status}
+data.frame(
+  Package = c(required_packages, names(optional_package_status)),
+  Required = c(rep(TRUE, length(required_packages)), rep(FALSE, length(optional_package_status))),
+  Available = c(
+    rep(TRUE, length(required_packages)),
+    unname(optional_package_status)
+  )
+)
+```
+
+# Load Sequences
+
+```{r load-data}
+mexico <- read.fasta(file.path(assets_dir, "mexico.fasta"))
+wuhan <- read.fasta(file.path(assets_dir, "wuhan.fasta"))
+francia <- read.fasta(file.path(assets_dir, "francia.fasta"))
+```
+
+# Sequence Lengths
+
+```{r lengths}
+cat("Longitud Mexico:", length(mexico[[1]]), "\n")
+cat("Longitud Wuhan:", length(wuhan[[1]]), "\n")
+cat("Longitud Francia:", length(francia[[1]]), "\n")
+```
+
+# Base Composition Plots
+
+```{r plots}
+compara <- function(mex, wuh, fra) {
+  par(mfrow = c(3, 1))
+
+  bases <- c("a", "c", "g", "t")
+
+  barplot(table(factor(mex, levels = bases)),
+    col = 1:4, main = "Mexico"
+  )
+
+  barplot(table(factor(wuh, levels = bases)),
+    col = 1:4, main = "Wuhan"
+  )
+
+  barplot(table(factor(fra, levels = bases)),
+    col = 1:4, main = "Francia"
+  )
+}
+
+compara(mexico[[1]], wuhan[[1]], francia[[1]])
+```
+
+# Session Info (Debugging)
+
+```{r session-info}
+sessionInfo()
+```

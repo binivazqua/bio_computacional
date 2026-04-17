@@ -1,0 +1,278 @@
+---
+title: "FJ26 Actividad colaborativa en clase | Ejercicios de R"
+author: "Biniza Verónica Vázquez Moreno | a01737294, Imanol Benitez Castro | a01821115"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+
+## Ejercicio 1
+Escribe una función que genere una secuencia aleatoria de DNA de tamaño “n”.
+
+```{r}
+gen_dna <- function(n) {
+    nucleotidos <- c("A", "T", "C", "G")
+    dna_seq <- sample(nucleotidos, size = n, replace = TRUE)
+    paste(dna_seq, collapse = "")
+}
+
+gen_dna(10)
+```
+
+
+## Ejercicio 2
+Codifica una función que calcula el tamaño de una secuencia de DNA.
+```{r}
+dna_length <- function(seq) {
+    # Split la str de caracteres en un vector (como greedy en python)
+    chars <- strsplit(seq, split = "")[[1]]
+
+    # conservar SÓLO los chars válidos de las bases.
+    valid_chars <- chars[chars %in% c("A", "T", "C", "G")]
+
+    # devolver la longitud del vector resultante
+    length(valid_chars)
+}
+
+dna_length("ATG-CNTA") # prueba con una secuencia que incluye caracteres no válidos.
+```
+
+## Ejercicio 3
+Crea una función que recibe una secuencia de DNA e imprime el porcentaje de cada
+base en la secuencia.
+
+```{r}
+base_porcentaje <- function(seq) {
+    # Split la str de caracteres en un vector (como greedy en python)
+    # como ejercicio 2
+    chars <- strsplit(seq, split = "")[[1]]
+
+    # igual que ejercicio 2.
+    valid_bases <- chars[chars %in% c("A", "T", "C", "G")]
+
+    # almacenamos
+    total <- length(valid_bases)
+
+    # práctica de "Log" para evitar correr código ineficiente.
+    if (total == 0) {
+        stop("No se encontraron bases válidas en la secuencia.")
+    }
+
+    # contar usando func table estilo matriz en python con factor tipo enum o dict.
+    counts <- table(factor(valid_bases, levels = c("A", "T", "C", "G")))
+
+    # calcular %
+    percentages <- (counts / total) * 100
+
+    # Print nicely
+    for (base in names(percentages)) {
+        cat(base, ":", round(percentages[base], 2), "%\n")
+    }
+
+    # return con cambio de tipo a numérico para evitar problemas con el tipo de datos. @claude sugirió.
+    return(as.numeric(percentages))
+}
+
+base_porcentaje("ATGCGTAN--")
+```
+
+## Ejercicio 4
+Programa una función que transcribe DNA a RNA, usa la siguiente tabla (tabla en canvas).
+
+```{r}
+transcribe_dna <- function(seq) {
+    chars <- strsplit(seq, split = "")[[1]]
+
+    valid_bases <- chars[chars %in% c("A", "T", "C", "G")]
+
+    # REEMPLAZO POR ACUERDO: T por U
+    # uso de ifelse para no usar un loop.
+    # @claude sugirió usar un vector de caracteres para mapear, pero esto es más directo.
+    rna_bases <- ifelse(valid_bases == "T", "U", valid_bases)
+
+    # "colapsar" o convertir de nuevo a str.
+    paste(rna_bases, collapse = "")
+}
+
+transcribe_dna("ATGC-TAN")
+```
+
+
+## Ejercicio 5
+Crea una función que traduce una secuencia de RNA a una secuencia de proteínas.
+
+```{r}
+translate_rna <- function(seq) {
+    # Definir la tabla de codones (RNA a aminoácidos)
+    codon_table <- c(
+        "UUU" = "F", "UUC" = "F", "UUA" = "L", "UUG" = "L",
+        "UCU" = "S", "UCC" = "S", "UCA" = "S", "UCG" = "S",
+        "UAU" = "Y", "UAC" = "Y", "UAA" = "Stop", "UAG" = "Stop",
+        "UGU" = "C", "UGC" = "C", "UGA" = "Stop", "UGG" = "W",
+        "CUU" = "L", "CUC" = "L", "CUA" = "L", "CUG" = "L",
+        "CCU" = "P", "CCC" = "P", "CCA" = "P", "CCG" = "P",
+        "CAU" = "H", "CAC" = "H", "CAA" = "Q", "CAG" = "Q",
+        "CGU" = "R", "CGC" = "R", "CGA" = "R", "CGG" = "R",
+        "AUU" = "I", "AUC" = "I", "AUA" = "I", "AUG" = "M",
+        "ACU" = "T", "ACC" = "T", "ACA" = "T", "ACG" = "T",
+        "AAU" = "N", "AAC" = "N", "AAA" = "K", "AAG" = "K",
+        "AGU" = "S", "AGC" = "S", "AGA" = "R", "AGG" = "R",
+        "GUU" = "V", "GUC" = "V", "GUA" = "V", "GUG" = "V",
+        "GCU" = "A", "GCC" = "A", "GCA" = "A", "GCG" = "A",
+        "GAU" = "D", "GAC" = "D", "GAA" = "E", "GAG" = "E",
+        "GGU" = "G", "GGC" = "G", "GGA" = "G", "GGG" = "G"
+    )
+
+    # Limpiar la secuencia de RNA para asegurarnos de que sólo contiene bases válidas
+    chars <- strsplit(seq, "")[[1]]
+    valid <- chars[chars %in% c("A", "U", "C", "G")]
+
+    # cambiar a str
+    clean_seq <- paste(valid, collapse = "")
+
+    # parte clave: dividir la secuencia en codones (tripletes)
+    # uso de substring() para extraer cada codón de 3 caracteres.
+    codons <- substring(clean_seq, seq(1, nchar(clean_seq), 3), seq(3, nchar(clean_seq), 3))
+
+    # variable asignada a la proteína resultante, que se irá construyendo a medida que traducimos cada codón.
+    protein <- c()
+
+    for (codon in codons) {
+        if (nchar(codon) < 3) next # caso base @claude sugirió para evitar codones incompletos al final de la secuencia. usamos nchar()
+
+        aa <- codon_table[[codon]] # 1. buscar el aminoácido correspondiente al codón usando la tabla de codones.
+
+        if (is.null(aa)) next # fail safe @claude usando is.null() para manejar codones no válidos que podrían no estar en la tabla.
+
+        if (aa == "Stop") break # bandera de parada: si el codón corresponde a "Stop", terminamos la traducción.
+
+        protein <- c(protein, aa)
+    }
+
+    # colapsar en una string para devolver la secuencia de proteínas resultante.
+    paste(protein, collapse = "")
+}
+
+translate_rna("AUGGCCUAA")
+```
+
+## Ejercicio 6
+Escribe una función que recibe una hebra directa y regresa la hebra inversa.
+```{r}
+reverse_strand <- function(seq) {
+    chars <- strsplit(seq, split = "")[[1]]
+
+    # usar funcion rev() para invertir el orden de los caracteres.
+    reversed <- rev(chars)
+
+
+    paste(reversed, collapse = "")
+}
+
+reverse_strand("TGCGATAC")
+```
+
+## Ejercicio 7
+Escribe una función qué recibe una hebra directa y obtiene la hebra
+complementaria.
+```{r}
+comp_strand <- function(seq) {
+    chars <- strsplit(seq, split = "")[[1]]
+
+    # definir las reglas de complementación en un vector.
+    comp_map <- c(
+        "A" = "T", "T" = "A", "C" = "G", "G" = "C",
+        "-" = "-", "N" = "N"
+    )
+
+    # aplicar las reglas de complementación a cada carácter usando sapply() para iterar sobre el vector de caracteres
+    # y reemplazar cada base por su complementaria según el mapa definido.
+    #  @claude sugirió usar un vector de caracteres para mapear, pero esto es más directo.
+    comp <- sapply(chars, function(x) {
+        if (x %in% names(comp_map)) comp_map[x] else x
+    })
+
+    # reverso.
+    reversed_comp <- rev(comp)
+
+
+    paste(reversed_comp, collapse = "")
+}
+
+comp_strand("ATGC-TAN")
+```
+
+## Ejercicio 8 
+Escribe la función en R para obtener la hebra complementaria inversa, desde una
+hebra complementaria.
+```{r}
+rev_complementaria <- function(seq) {
+    chars <- strsplit(seq, split = "")[[1]]
+    comp_map <- c(
+        "A" = "T", "T" = "A", "C" = "G", "G" = "C",
+        "-" = "-", "N" = "N"
+    )
+
+    # usar func sapply() para aplicar las reglas de complementación a cada carácter,
+    # similar al ejercicio anterior.
+    comp <- sapply(chars, function(x) {
+        if (x %in% names(comp_map)) comp_map[x] else x
+    })
+
+
+    rev_comp <- rev(comp)
+
+    paste(rev_comp, collapse = "")
+}
+
+rev_complementaria("TGCGATAC")
+```
+
+## Ejercicio 9
+
+# secuencias de prueba
+sequences <- c(
+  "ATG-CNTA",     # válida o invalida
+  "NNN---",       # sólo chars no válidos
+  "TGCGATAC",     # ADN normal
+  "A-TGNCGTA--N"  # mezcla de válidos e inválidos
+)
+
+# Function to print results nicely
+probar_tarea <- function(seq) {
+  cat("=====================================\n")
+  cat("Sequence:", seq, "\n")
+  cat("=====================================\n")
+  
+  # dna_length
+  cat("Length (valid bases only):", dna_length(seq), "\n")
+  
+  # base_percentage
+  cat("\nBase Percentages:\n")
+  tryCatch({
+    base_percentage(seq)
+  }, error = function(e) {
+    cat("No valid bases found.\n")
+  })
+  
+  # transcribe_dna
+  cat("\nTranscribed RNA:", transcribe_dna(seq), "\n")
+  
+  # reverse_strand
+  cat("Reversed Strand (3'->5'):", reverse_strand(seq), "\n")
+  
+  # complement_strand
+  cat("Complement Strand (3'->5'):", complement_strand(seq), "\n")
+  
+  # reverse_complement
+  cat("Reverse Complement (5'->3'):", reverse_complement(seq), "\n")
+  
+  cat("\n\n")
+}
+
+# Run tests on all sequences
+for (seq in sequences) {
+  probar_tarea(seq)
+}
+```
+
