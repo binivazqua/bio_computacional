@@ -168,6 +168,25 @@ reverse_complement <- function(seq) {
 }
 ```
 
+The helper above expects a single sequence vector, not the full `seqs` list.
+The chunk below converts `seqs` into named vectors and applies the function to
+each sample.
+
+```{r reverse-complement-all}
+seq_vectors <- setNames(lapply(seqs, as.vector), sample_names)
+
+reverse_complements <- data.frame(
+  Sample = names(seq_vectors),
+  ReverseComplement = vapply(
+    seq_vectors,
+    function(x) paste(reverse_complement(x), collapse = ""),
+    character(1)
+  )
+)
+
+head(reverse_complements)
+```
+
 # 10. Interpretation Guide
 
 - Mutation clusters may suggest possible hotspots.

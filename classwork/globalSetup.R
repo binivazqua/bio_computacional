@@ -40,30 +40,35 @@ get_script_path <- function() {
 
 setup_script <- get_script_path()
 classwork_dir <- dirname(setup_script)
+project_root <- dirname(classwork_dir)
 assets_dir <- file.path(classwork_dir, "assets")
-sars_assets_dir <- file.path(assets_dir, "secuencias_sars")
+fasta_assets_dir <- file.path(assets_dir, "secuencias_fasta")
+genbank_assets_dir <- file.path(assets_dir, "secuencias_gb")
+wuhan_reference_file <- file.path(assets_dir, "wuhan.fasta")
 
 if (!dir.exists(assets_dir)) {
   stop("The assets directory was not found at 'classwork/assets'.", call. = FALSE)
 }
 
 if (requireNamespace("knitr", quietly = TRUE)) {
-  knitr::opts_knit$set(root.dir = assets_dir)
+  knitr::opts_knit$set(root.dir = project_root)
 }
 
 required_packages <- c(
-  "seqinr",
   "ggplot2",
   "dplyr",
   "tidyr",
-  "ape"
+  "ape",
+  "Biostrings",
+  "DECIPHER"
 )
 
 invisible(lapply(required_packages, load_if_available))
 
 optional_packages <- c(
-  "DECIPHER",
-  "Biostrings",
+  "seqinr",
+  "DBI",
+  "RSQLite",
   "adegenet",
   "ggtree",
   "viridis",
@@ -77,20 +82,51 @@ optional_package_status <- vapply(
   quietly = TRUE
 )
 
-required_files <- c("classwork/assets/secuencias_fasta/mexico.fasta", "classwork/assets/wuhan.fasta", "classwork/assets/secuencias_fasta/francia.fasta")
-has_sequence_file <- function(filename) {
-  file.exists(file.path(assets_dir, filename)) ||
-    file.exists(file.path(sars_assets_dir, filename))
+list_project_fasta_files <- function(include_combined = FALSE) {
+  if (!dir.exists(fasta_assets_dir)) {
+    stop(
+      "The FASTA directory was not found at 'classwork/assets/secuencias_fasta'.",
+      call. = FALSE
+    )
+  }
+
+  fasta_files <- list.files(
+    path = fasta_assets_dir,
+    pattern = "\\.fasta$",
+    full.names = TRUE
+  )
+
+  if (!include_combined) {
+    fasta_files <- fasta_files[basename(fasta_files) != "all_arn_sequences.fasta"]
+  }
+
+  fasta_files
 }
 
-missing_files <- required_files[!vapply(required_files, has_sequence_file, logical(1))]
+project_fasta_files <- list_project_fasta_files()
+combined_fasta_file <- file.path(fasta_assets_dir, "all_arn_sequences.fasta")
 
-if (length(missing_files) > 0) {
+if (length(project_fasta_files) == 0) {
   stop(
-    sprintf(
-      "Missing required FASTA files in classwork/assets: %s",
-      paste(missing_files, collapse = ", ")
-    ),
+    "No individual FASTA files were found in 'classwork/assets/secuencias_fasta'.",
     call. = FALSE
   )
+}
+
+if (!file.exists(wuhan_reference_file)) {
+  warning(
+    "Reference file 'classwork/assets/wuhan.fasta' was not found.",
+    call. = FALSE
+  )
+}
+
+read_project_fastas <- function(include_combined = FALSE) {
+  fasta_files <- list_project_fasta_files(include_combined = include_combined)
+  dna_set <- Biostrings::readDNAStringSet(fasta_files)
+
+  if (length(dna_set) == length(fasta_files)) {
+    names(dna_set) <- tools::file_path_sans_ext(basename(fasta_files))
+  }
+
+  dna_set
 }
