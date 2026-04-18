@@ -90,7 +90,14 @@ compara_all <- function(seq_set) {
 # FUNC EN ACTION
 composition_plot <- compara_all(sequences)
 print(composition_plot)
-ggsave("comparacion_fasta.png", plot = composition_plot, width = 12, height = 16, dpi = 150)
+ggsave(
+    filename = "comparacion_fasta.png",
+    plot = composition_plot,
+    width = 12,
+    height = 16,
+    dpi = 150,
+    path = getwd()
+)
 ```
 
 ## Cálculo del porcentaje de GC:
