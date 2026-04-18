@@ -1,0 +1,135 @@
+---
+title: "Evidencia 1 | Análisis Inicial"
+author: "Biniza Verónica Vázquez Moreno A01737294"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+---
+```{r setup, include=FALSE}
+source(file.path("..", "classwork", "globalSetup.R"))
+```
+
+## Preparación del entorno de desarrollo
+
+Para este análisis se añadieron las librerías requeridas como fue visto en clase y se reutilizó el archivo compartido `globalSetup.R`, el cual centraliza la carga de paquetes y la definición de rutas de trabajo. De esta forma, el reporte queda más limpio y evita repetir un bloque largo de configuración dentro del documento.
+
+## Carga de secuencias:
+Cargamos las secuencias de ARN del SARS-CoV-2 a partir de los archivos FASTA descargados, utilizando la función `read_project_fastas()` definida en el bloque de configuración. Esto nos permitirá tener un objeto `DNAStringSet` con todas las secuencias organizadas y listas para su análisis.
+
+```{r}
+sequences <- read_project_fastas()
+sequences
+```
+
+
+## Cálculo de la longitud de las secuencias de cada variante:
+
+Una vez cargadas las secuencias, calculamos la longitud de cada una utilizando la función `width()` de Biostrings, que devuelve el número de nucleótidos en cada secuencia. Esto nos permitirá comparar las longitudes entre las diferentes variantes y detectar posibles anomalías o diferencias significativas.
+Usamos `width()`ya que es la función específica para objetos `DNAStringSet` y es más eficiente que otras alternativas para este tipo de datos.
+```{r}
+## LONGITUDES
+cat("Sequence lengths:\n")
+for (i in seq_along(sequences)) {
+    cat(names(sequences)[i], ":", width(sequences)[i], "\n")
+}
+```
+
+## Gráfico comparativo de las secuencias:
+Para visualizar las diferencias entre las secuencias de ARN de las distintas variantes, podemos crear un gráfico comparativo utilizando `ggplot2`. Este gráfico puede mostrar la longitud de cada secuencia, así como otras características relevantes como el porcentaje de GC o la presencia de mutaciones específicas. Esto nos ayudará a identificar patrones o tendencias entre las variantes y a comunicar nuestros hallazgos de manera efectiva.
+Dada la gran cantidad de secuencias, se usaron funciones específicas investigadas en la documentación de Biostrings para comparar la composición de bases entre las secuencias, lo que nos permite visualizar las diferencias en la frecuencia de cada base (A, C, G, T) entre las variantes. Esto es especialmente útil para detectar posibles mutaciones o cambios en la composición genética que podrían estar relacionados con diferencias en la transmisibilidad o virulencia de las variantes.
+
+Listado de funciones:
+- `do.call()`: Permite ejecutar una función con una lista de argumentos, lo que es útil para combinar los resultados de múltiples secuencias en un solo data frame.
+- `lapply()`: Aplica una función a cada elemento de una lista, en este caso, a cada secuencia en el conjunto de secuencias.
+- `strsplit()`: Divide una cadena de texto en partes, lo que nos permite obtener los caracteres individuales de cada secuencia.
+- `table()`: Crea una tabla de frecuencias para contar la cantidad de cada base en cada secuencia.
+- `ggplot()`: Función principal de ggplot2 para crear gráficos, que nos permite visualizar la composición de bases de cada secuencia de manera clara y comparativa.
+
+> _Usamos ggplot() para presentar la composición de bases de todas las variantes en una sola imagen de manera más clara y ordenada. En lugar de generar muchos gráficos separados, se construyó un solo gráfico facetado que agrupa la información por secuencia, lo que facilita la comparación visual entre variantes. Esta forma de presentación permitió “embellecer” la salida, haciendo la gráfica más legible, uniforme y adecuada para integrarla en el reporte final._
+
+Adicionalmente, se guardan los gráficos generados en archivos PNG para su posterior revisión y presentación, asegurando que los resultados visuales estén disponibles incluso fuera del entorno de R.
+Usamos `png()` para guardar los gráficos generados, lo que nos permite conservar una copia visual de los resultados que puede ser fácilmente compartida o incluida en informes sin necesidad de ejecutar el código nuevamente.
+
+
+```{r}
+# FUNCIONES PARA COMPARAR SECUENCIAS
+compara_all <- function(seq_set) {
+    base_levels <- c("a", "c", "g", "t")
+    plot_data <- do.call(
+        rbind,
+        lapply(seq_along(seq_set), function(i) {
+            seq_chars <- tolower(strsplit(as.character(seq_set[[i]]), "")[[1]])
+            seq_table <- table(factor(seq_chars, levels = base_levels))
+
+            data.frame(
+                sequence = names(seq_set)[i],
+                base = c("A", "C", "G", "T"),
+                count = as.numeric(seq_table)
+            )
+        })
+    )
+
+    composition_plot <- ggplot(
+        plot_data,
+        aes(x = base, y = count, fill = base)
+    ) +
+        geom_col() +
+        facet_wrap(~sequence, scales = "free_y") +
+        labs(
+            title = "Composicion de bases por secuencia",
+            x = "Base",
+            y = "Conteo"
+        ) +
+        theme_minimal() +
+        theme(legend.position = "none")
+
+    composition_plot
+}
+
+# FUNC EN ACTION
+composition_plot <- compara_all(sequences)
+print(composition_plot)
+ggsave("comparacion_fasta.png", plot = composition_plot, width = 12, height = 16, dpi = 150)
+```
+
+## Cálculo del porcentaje de GC:
+El porcentaje de GC es una medida importante en biología molecular que indica la proporción de bases guanina (G) y citosina (C) en una secuencia de ADN o ARN. Para calcular este porcentaje, utilizamos la función `letterFrequency()` de Biostrings, que nos permite contar la frecuencia de cada base en las secuencias. Luego, sumamos las frecuencias de G y C, dividimos por la longitud total de la secuencia y multiplicamos por 100 para obtener el porcentaje. Este análisis nos ayudará a entender mejor la composición de las secuencias y a identificar posibles diferencias entre las variantes que podrían estar relacionadas con su estabilidad o capacidad de replicación.
+De nuevo, usamos una función específica de Biostrings para aprovechar la eficiencia y precisión en el conteo de bases, pero podría ser implementado manualmente con funciones básicas de R y `seqinr` si se desea una aproximación más general sin depender de paquetes especializados.
+
+```{r}
+# porcentajes
+gc_table <- data.frame(
+    variant = names(sequences),
+    gc_percent = rowSums(
+        letterFrequency(sequences, letters = c("G", "C"), as.prob = TRUE)
+    ) * 100
+)
+
+gc_table
+```
+
+## Análisis de complementos:
+El análisis de complementos implica identificar las secuencias complementarias a las secuencias originales usando `comp()`de `seqinr`como fue visto en clase.
+No obstante, necesitamos convertir las secuencias de `DNAStringSet` a un formato compatible con `seqinr`, lo que se puede hacer utilizando la función `as.character()` para obtener las secuencias como cadenas de texto. Luego, aplicamos `comp()` a cada secuencia para obtener su complemento, lo que nos permitirá analizar la relación entre las secuencias originales y sus complementos, así como identificar posibles mutaciones o cambios en la composición genética que podrían estar relacionados con diferencias en la transmisibilidad o virulencia de las variantes.
+
+La asociación entre cada variante y su secuencia se conserva con `setNames()`. Esta función toma la lista de secuencias convertidas y les asigna los mismos nombres que ya tenía el objeto original `sequences`.
+Después, `names()` permite recuperar esos nombres para usarlos como identificadores en la tabla final. En otras palabras, `setNames()` coloca las etiquetas y `names()` las vuelve a leer para no perder la correspondencia entre cada variante y su complemento.
+
+```{r}
+sequence_vectors <- setNames(
+    lapply(sequences, function(x) strsplit(as.character(x), "")[[1]]),
+    names(sequences)
+)
+
+complement_variants <- data.frame(
+    variant = names(sequence_vectors),
+    complement = vapply(
+        sequence_vectors,
+        function(x) paste(comp(x), collapse = ""),
+        character(1)
+    )
+)
+
+head(complement_variants)
+```

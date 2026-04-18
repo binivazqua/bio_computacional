@@ -7,7 +7,6 @@ sequences <- read_project_fastas()
 
 ## LONGITUDES
 cat("Sequence lengths:\n")
-
 for (i in seq_along(sequences)) {
     cat(names(sequences)[i], ":", width(sequences)[i], "\n")
 }
@@ -47,18 +46,21 @@ compara_all <- function(seq_set) {
 }
 
 # FUNC EN ACTION
+quartz()
 compara_all(sequences)
+png("comparacion_fasta.png")
 
 
 # porcentajes
 gc_table <- data.frame(
-    variant = names(seqs),
+    variant = names(sequences),
     gc_percent = rowSums(
-        letterFrequency(seqs, letters = c("G", "C"), as.prob = TRUE)
+        letterFrequency(sequences, letters = c("G", "C"), as.prob = TRUE)
     ) * 100
 )
 
 gc_table
+png("gc_table.png")
 
 # COMPLEMENTOS
 

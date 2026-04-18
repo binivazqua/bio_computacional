@@ -55,6 +55,7 @@ if (requireNamespace("knitr", quietly = TRUE)) {
 }
 
 required_packages <- c(
+  "seqinr",
   "ggplot2",
   "dplyr",
   "tidyr",
@@ -66,7 +67,6 @@ required_packages <- c(
 invisible(lapply(required_packages, load_if_available))
 
 optional_packages <- c(
-  "seqinr",
   "DBI",
   "RSQLite",
   "adegenet",
