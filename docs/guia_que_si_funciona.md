@@ -77,8 +77,8 @@ Seqs2DB(
 dna <- SearchDB(dbConn)
 length(dna)
 
-d <- DistanceMatrix(dna, correction = "Jukes-Cantor")
-tree <- TreeLine(myDistMatrix = d)
+d <- DistanceMatrix(dna, correction="K80", verbose=FALSE)
+tree <- DECIPHER::Treeline(myXStringSet=dna, method="NJ", cutoff=0.05, showPlot=TRUE, verbose=FALSE)
 
 plot(as.phylo(tree))
 
