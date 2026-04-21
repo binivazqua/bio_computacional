@@ -1,4 +1,4 @@
-Autoría: Biniza Vázquez y OpenAI Codex  
+Autoría: Biniza Vázquez y Claude Haiku 4.5  
 Abril de 2026
 
 # Configuración de VS Code para este proyecto
