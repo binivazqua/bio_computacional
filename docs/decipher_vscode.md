@@ -21,7 +21,20 @@ classwork/assets/secuencias_gb/all_sequences.gen
 - Si el archivo empieza con `>`, se lee como FASTA con `readDNAStringSet()`.
 - Si el archivo empieza con `LOCUS`, se trata como GenBank y se carga con `Seqs2DB(..., type = "GenBank")`.
 
-## Flujo 1: trabajar con FASTA en VS Code
+## ¿FASTA o GenBank? Cuál usar
+
+| Aspecto         | FASTA                       | GenBank                          |
+| --------------- | --------------------------- | -------------------------------- |
+| **Complejidad** | Baja (5 líneas de código)   | Media (10+ líneas)               |
+| **Velocidad**   | Rápida                      | Más lenta (requiere BD)          |
+| **Metadata**    | Solo secuencia              | LOCUS, DEFINITION, AUTHORS, etc. |
+| **Ideal para**  | Clase, demos, visualización | Investigación, publicaciones     |
+
+**Recomendación:** Para trabajos en clase y visualización de árboles, **usa FASTA**. Es más simple, igual de efectivo, y genera árboles igual de buenos.
+
+Ver documento completo: [FASTA_vs_GenBank.md](FASTA_vs_GenBank.md)
+
+## Flujo 1: trabajar con FASTA en VS Code (RECOMENDADO)
 
 Úsalo para alineamiento directo y árboles sencillos.
 Obtenido de la documentación de DECIPHER actual + ayuda de Claude Code Haiku 4.5
@@ -31,14 +44,70 @@ library(Biostrings)
 library(DECIPHER)
 library(ape)
 
-fasta_file <- "classwork/assets/secuencias_fasta/all_arn_sequences.fasta"
+# fasta_file <- "classwork/assets/secuencias_fasta/all_arn_sequences.fasta"
+
+fasta_file <- "classwork/assets/secuencias_fasta/all_arn_sequences_CLEAN.fasta"
 
 seqs <- readDNAStringSet(fasta_file)
 aligned <- AlignSeqs(seqs, verbose = TRUE)
-dist_mat <- dist.hamming(aligned)
-tree <- nj(as.dist(dist_mat))
+d <- DistanceMatrix(aligned, correction="K80", verbose=FALSE)  # ← Aquí está
+tree <- nj(as.dist(d))
+
+
 
 plot(tree)
+```
+
+## Hacer un Árbol estilo MSA sin que tarde años en correr...
+
+```r
+library(Biostrings)
+library(DECIPHER)
+library(ape)
+
+# Configuración de archivos (recomendación en docs para guardar png)
+fasta_file <- "classwork/assets/secuencias_fasta/all_arn_sequences.fasta"
+output_dir <- "outputs"
+
+# Crear directorio si no existe (failsafe, en cualquier contexto)
+if (!dir.exists(output_dir)) {
+    dir.create(output_dir, recursive = TRUE)
+}
+# ÁRBOL FILOGENÉTICO (Neighbor-Joining + K80)
+
+# Mejor para: Entender relaciones evolutivas entre variantes
+# Interpreta: Tiempo evolutivo, ramas reflejan distancia genética
+
+cat("\n========== OPCIÓN 1: ÁRBOL FILOGENÉTICO ==========\n")
+
+# Preparar datos desde FASTA
+
+seqs1 <- readDNAStringSet(fasta_file)
+
+# Alinear primero
+
+aligned1 <- AlignSeqs(seqs1, verbose = FALSE)
+
+# Calcular distancias
+
+d1 <- DistanceMatrix(aligned1, correction = "K80", verbose = FALSE)
+
+# Construir árbol filogenético usando hclust para mejor control
+
+hc1 <- hclust(as.dist(d1), method = "average")
+tree_phylo <- as.phylo(hc1)
+
+# Visualizar
+
+png(file.path(output_dir, "arbol_filogenetico.png"), width = 1400, height = 700)
+
+# CALVE: "rightwards" lo hace estilo MSA
+plot.phylo(tree_phylo,
+    direction = "rightwards", cex = 0.7,
+    main = "Árbol Filogenético (UPGMA + K80)\n28 variantes SARS-CoV-2"
+)
+dev.off() #sólo para MACOs
+
 ```
 
 ## Flujo 2: trabajar con GenBank en VS Code
@@ -67,7 +136,7 @@ dna <- SearchDB(dbConn)
 d <- DistanceMatrix(dna, correction="K80", verbose=FALSE)
 tree <- DECIPHER::Treeline(myXStringSet=dna, method="NJ", cutoff=0.05, showPlot=TRUE, verbose=FALSE)
 
-plot(as.phylo(tree))
+plot(tree)
 dbDisconnect(dbConn)
 ```
 
@@ -226,12 +295,11 @@ tree <- DECIPHER::Treeline(
   myXStringSet=dna,
   method="NJ",
   cutoff=0.05,
-  showPlot=FALSE      # ← No dibuja automáticamente
+  showPlot=FALSE
 )
 
-# Luego mejora con ggtree
 library(ggtree)
-ggtree(as.phylo(tree)) +
+ggtree(tree) +
   geom_tiplab(size=3) +
   geom_treescale() +
   theme_tree2()
