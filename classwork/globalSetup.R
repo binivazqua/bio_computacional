@@ -61,7 +61,8 @@ required_packages <- c(
   "tidyr",
   "ape",
   "Biostrings",
-  "DECIPHER"
+  "DECIPHER",
+  "msa"
 )
 
 invisible(lapply(required_packages, load_if_available))

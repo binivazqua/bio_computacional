@@ -1,0 +1,111 @@
+---
+title: "Análisis de Bases"
+author: "Biniza Verónica Vázquez Moreno A01737294"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+source(
+  file.path(
+    dirname(knitr::current_input()),
+    "..",
+    "classwork",
+    "globalSetup.R"
+  )
+)
+```
+
+## Carga de secuencias
+
+En esta sección se cargan las secuencias FASTA del proyecto usando la configuración compartida del repositorio.
+
+```{r}
+sequences <- read_project_fastas()
+sequences
+```
+
+## Tabla de contenido de bases
+
+Se calcula el porcentaje de GC y AT para cada secuencia. Además, se crea una etiqueta corta `VarN` para que la gráfica sea legible y se conserve una tabla de referencia con el nombre completo de cada variante.
+
+```{r}
+base_freq <- Biostrings::letterFrequency(
+  sequences,
+  letters = c("A", "C", "G", "T"),
+  as.prob = TRUE
+)
+
+tabla_bases <- data.frame(
+  VarID = paste0("Var", seq_along(sequences)),
+  Variante = names(sequences),
+  GC_Content = rowSums(base_freq[, c("G", "C"), drop = FALSE]) * 100,
+  AT_Content = rowSums(base_freq[, c("A", "T"), drop = FALSE]) * 100,
+  check.names = FALSE
+)
+
+tabla_bases
+```
+
+## Tabla de referencia de variantes
+
+Esta tabla permite identificar qué nombre completo corresponde a cada etiqueta `VarN` usada en la gráfica.
+
+```{r}
+tabla_variantes <- tabla_bases[, c("VarID", "Variante")]
+
+knitr::kable(
+  tabla_variantes,
+  col.names = c("VarN", "Nombre de la variante"),
+  caption = "Correspondencia entre la etiqueta del gráfico y el nombre completo de la variante."
+)
+```
+
+## Gráfica de contenido AT por variante
+
+Se usa la etiqueta corta `VarN` en el eje X para evitar que los nombres largos oculten la visualización.
+
+```{r}
+p <- ggplot(
+  tabla_bases,
+  aes(x = VarID, y = AT_Content, fill = VarID)
+) +
+  geom_col() +
+  theme_minimal() +
+  labs(
+    title = "Contenido de Adenina y Timina por Variante",
+    x = "Variante",
+    y = "Contenido AT (%)"
+  ) +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+if (requireNamespace("viridis", quietly = TRUE)) {
+  p <- p + viridis::scale_fill_viridis_d(guide = "none")
+} else {
+  p <- p + scale_fill_hue(guide = "none")
+}
+
+print(p)
+```
+
+## Exportación de la gráfica
+
+Se guarda la gráfica en PNG usando `ragg` si está disponible, ya que en este equipo ese dispositivo funcionó mejor que Cairo.
+
+```{r}
+if (requireNamespace("ragg", quietly = TRUE)) {
+  ggplot2::ggsave(
+    filename = "grafica_at.png",
+    plot = p,
+    device = ragg::agg_png,
+    width = 10,
+    height = 6,
+    units = "in",
+    dpi = 300
+  )
+} else {
+  message("El paquete 'ragg' no está instalado; la gráfica no se exportó a PNG en este chunk.")
+}
+```

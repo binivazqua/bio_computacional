@@ -14,7 +14,7 @@ library(ape)
 
 # Configuración de archivos
 fasta_file <- "classwork/assets/secuencias_fasta/all_arn_sequences.fasta"
-output_dir <- "outputs"
+output_dir <- "outputs/analisis_comparativo_3_metodos"
 
 # Crear directorio si no existe
 if (!dir.exists(output_dir)) {
@@ -55,7 +55,7 @@ plot.phylo(tree_phylo,
 )
 dev.off()
 
-cat("✓ Árbol filogenético guardado: ", file.path(output_dir, "arbol_filogenetico.png"), "\n")
+cat("✓ Árbol filogenético guardado: ", file.path(output_dir, "arbol_filogenetico_GOAT.png"), "\n")
 cat("  Secuencias cargadas:", length(seqs1), "\n")
 cat("  Método: UPGMA (ligamiento promedio)\n")
 cat("  Modelo distancia: K80 (Kimura 2-Parameter)\n")

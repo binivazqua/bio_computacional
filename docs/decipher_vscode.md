@@ -99,7 +99,7 @@ tree_phylo <- as.phylo(hc1)
 
 # Visualizar
 
-png(file.path(output_dir, "arbol_filogenetico.png"), width = 1400, height = 700)
+png(file.path(output_dir, "arbol_filogenetico_asmsa.png"), width = 1400, height = 700)
 
 # CALVE: "rightwards" lo hace estilo MSA
 plot.phylo(tree_phylo,
