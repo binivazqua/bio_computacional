@@ -1,0 +1,265 @@
+---
+title: "Evidencia 1 | Análisis Inicial"
+author: "Biniza Verónica Vázquez Moreno A01737294"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+source(file.path("..", "classwork", "globalSetup.R"))
+```
+
+---
+
+## Parte 1: Investigación sobre COVID-19
+
+### ¿Cuál es la situación actual de COVID-19 a nivel mundial?
+
+#### A nivel mundial
+
+En el período del 16 de febrero al 15 de marzo de 2026, un total de 80 países reportaron 38,516 nuevos casos de COVID-19 a la OMS, una cifra menor comparada con los 50,752 casos del período anterior. Trece países de África, América y Europa registraron incrementos superiores al 10% (WHO COVID-19 Dashboard, s.f.). La variante XFG es actualmente la más prevalente a nivel global, representando el 50.8% de las secuencias analizadas en la semana del 8 de marzo de 2026. En general, el virus sigue circulando pero a niveles significativamente menores que durante la pandemia.
+
+La variante más reciente del virus es la Stratus, reportada a finales de 2025, la cual ha producido olas de infección menores, caracterizadas por rasgos acumulativos de inmunidad híbrida.
+
+De manera más específica, en la ventana de 28 días con corte al 22 de febrero de 2026, la OMS documentó 5,295 hospitalizaciones, 211 internamientos en terapia intensiva y 1,540 muertes. Se estima que el 89% de estos decesos ocurrió en pacientes mayores de 65 años. Esto confirma que el COVID-19 ha evolucionado hasta convertirse en una enfermedad de temporada que amenaza principalmente a los sectores poblacionales más vulnerables.
+
+#### En México
+
+México registró 7,186 casos confirmados de COVID-19 y 268 defunciones con corte a la semana epidemiológica 49 de 2025, según la Dirección General de Epidemiología (Secretaría de Salud, 2025). El virus continúa activo pero dentro de niveles controlados y bajo vigilancia continua junto con influenza y otros virus respiratorios.
+
+#### En el estado de Puebla
+
+Al corte del 15 de septiembre de 2025, Puebla acumulaba 384 casos positivos con una tasa de letalidad del 4.4%, siendo el segundo estado con más muertes por COVID-19 en el país en ese año, con 17 defunciones que representan el 7.7% del total nacional (Morales, 2025). Para diciembre de 2025, la Secretaría de Salud de Puebla reportó 414 casos activos y 19 defunciones asociadas al virus durante la temporada invernal, con más de 111,717 dosis de vacuna aplicadas en el año (Diario Cambio, 2025).
+
+---
+
+### Primera variante que se propagó al mundo
+
+La primera variante reconocida oficialmente fue la variante **Alfa** (B.1.1.7), que surgió en septiembre de 2020 en el Reino Unido y fue designada como variante de preocupación el 18 de diciembre de 2020 (Eiros y Hernández, 2022). El genoma de referencia Wuhan-Hu-1 (GenBank MN908947), con 29,903 nucleótidos, fue liberado al mundo por Zhang Yongzhen el 10 de enero de 2020 vía el sitio virological.org.
+
+La mutación D614G de la proteína Spike se extendió por todo el mundo en la primavera de 2020 (representando más del 93% de las secuencias latinoamericanas a finales de ese año, según Leite et al., 2022), y definió el linaje B.1. A continuación, la OMS designó cinco variantes de preocupación: Alfa (B.1.1.7, Reino Unido, septiembre de 2020), Beta (B.1.351, Sudáfrica, mayo de 2020), Gamma (P.1, Brasil/Japón, noviembre de 2020), Delta (B.1.617.2, India, octubre de 2020) y Ómicron (B.1.1.529, Sudáfrica/Botsuana, noviembre de 2021) (Siddiqui et al., 2022).
+
+---
+
+### Otras variantes en el mundo
+
+A lo largo de la pandemia se han designado 13 variantes principales con letras del alfabeto griego: Alfa, Beta, Gamma, Delta, Épsilon, Dseta, Eta, Zeta, Iota, Kappa, Lambda, Mu y Ómicron (Bupa Salud, s.f.). De estas, Ómicron fue la más significativa por su alta transmisibilidad y sus múltiples sublinajes. En 2026, la variante predominante es la **XFG**, que actualmente lidera la circulación en Estados Unidos y otros países (Gaceta Médica, 2025).
+
+---
+
+### ¿Cómo buscar información sobre variantes en tu país?
+
+Puebla no cuenta con un control público específico para las variantes; sus datos se incorporan al conjunto nacional de **CoViGen-Mex** en la plataforma COVID-TRACKER. En total, México ha secuenciado 94,799 genomas hasta septiembre de 2024, lo que representa aproximadamente el 2% de los casos confirmados, cifra que está muy por debajo del umbral del 5% recomendado por la OMS. Esto ha significado que la detección de variantes emergentes en México se ha retrasado de forma consistente (Taboada et al., 2021).
+
+---
+
+### ¿Qué harías en el caso de Li Wenliang?
+
+> **Opción elegida:** Reportarlo al centro de investigación o la universidad.
+
+Si me encontrara en una situación similar a la del Dr. Li Wenliang, elegiría reportar el brote al centro de investigación o la universidad. Mi razonamiento parte de asumir que me ubico en un contexto donde el gobierno no intentaría silenciarme. Guardar la información implicaría poner en riesgo a gran parte de la población, ya que un virus de transmisión respiratoria podría propagarse rápidamente. Revelarla directamente a la prensa presenta dos riesgos: que la población entre en pánico afectando una respuesta coordinada, o bien que ignore la advertencia. Lo más sensato es canalizarla a un centro de investigación o universidad, donde equipos especializados puedan estudiar el patógeno y buscar una solución de forma sistemática y fundamentada.
+
+---
+
+## Parte 2: Análisis de secuencias en R
+
+## Preparación del entorno de desarrollo
+
+Para este análisis se añadieron las librerías requeridas como fue visto en clase y se reutilizó el archivo compartido `globalSetup.R`, el cual centraliza la carga de paquetes y la definición de rutas de trabajo. De esta forma, el reporte queda más limpio y evita repetir un bloque largo de configuración dentro del documento.
+
+## Carga de secuencias
+
+Cargamos las secuencias de ARN del SARS-CoV-2 a partir de los archivos FASTA descargados, utilizando la función `read_project_fastas()` definida en el bloque de configuración. Esto nos permitirá tener un objeto `DNAStringSet` con todas las secuencias organizadas y listas para su análisis.
+
+```{r}
+sequences <- read_project_fastas()
+sequences
+```
+
+## Cálculo de la longitud de las secuencias de cada variante
+
+Una vez cargadas las secuencias, calculamos la longitud de cada una utilizando la función `width()` de Biostrings, que devuelve el número de nucleótidos en cada secuencia. Esto nos permitirá comparar las longitudes entre las diferentes variantes y detectar posibles anomalías o diferencias significativas.
+
+Usamos `width()` ya que es la función específica para objetos `DNAStringSet` y es más eficiente que otras alternativas para este tipo de datos.
+
+```{r}
+## LONGITUDES
+cat("Sequence lengths:\n")
+for (i in seq_along(sequences)) {
+    cat(names(sequences)[i], ":", width(sequences)[i], "\n")
+}
+```
+
+## Gráfico comparativo de las secuencias
+
+Para visualizar las diferencias entre las secuencias de ARN de las distintas variantes, creamos un gráfico comparativo utilizando `ggplot2`. Este gráfico muestra la composición de bases (A, C, G, T) de cada secuencia, lo que nos ayuda a identificar patrones o tendencias entre las variantes y a detectar posibles mutaciones o cambios en la composición genética relacionados con diferencias en transmisibilidad o virulencia.
+
+Dada la gran cantidad de secuencias, se usaron funciones específicas investigadas en la documentación de Biostrings:
+
+- `do.call()`: Permite ejecutar una función con una lista de argumentos, útil para combinar los resultados de múltiples secuencias en un solo data frame.
+- `lapply()`: Aplica una función a cada elemento de una lista.
+- `strsplit()`: Divide una cadena de texto en caracteres individuales.
+- `table()`: Crea una tabla de frecuencias para contar la cantidad de cada base por secuencia.
+- `ggplot()`: Función principal de ggplot2 para crear el gráfico facetado comparativo.
+
+> _Usamos `ggplot()` para presentar la composición de bases de todas las variantes en una sola imagen de manera más clara y ordenada. En lugar de generar muchos gráficos separados, se construyó un solo gráfico facetado que agrupa la información por secuencia, facilitando la comparación visual entre variantes._
+
+```{r}
+# FUNCIONES PARA COMPARAR SECUENCIAS
+compara_all <- function(seq_set) {
+    base_levels <- c("a", "c", "g", "t")
+    plot_data <- do.call(
+        rbind,
+        lapply(seq_along(seq_set), function(i) {
+            seq_chars <- tolower(strsplit(as.character(seq_set[[i]]), "")[[1]])
+            seq_table <- table(factor(seq_chars, levels = base_levels))
+
+            data.frame(
+                sequence = names(seq_set)[i],
+                base = c("A", "C", "G", "T"),
+                count = as.numeric(seq_table)
+            )
+        })
+    )
+
+    composition_plot <- ggplot(
+        plot_data,
+        aes(x = base, y = count, fill = base)
+    ) +
+        geom_col() +
+        facet_wrap(~sequence, scales = "free_y") +
+        labs(
+            title = "Composicion de bases por secuencia",
+            x = "Base",
+            y = "Conteo"
+        ) +
+        theme_minimal() +
+        theme(legend.position = "none")
+
+    composition_plot
+}
+
+# FUNC EN ACTION
+composition_plot <- compara_all(sequences)
+print(composition_plot)
+ggsave(
+    filename = "comparacion_fasta.png",
+    plot = composition_plot,
+    width = 12,
+    height = 16,
+    dpi = 150,
+    path = getwd()
+)
+```
+
+## Cálculo del porcentaje de GC
+
+El porcentaje de GC indica la proporción de bases guanina (G) y citosina (C) en una secuencia. Para calcularlo, utilizamos la función `letterFrequency()` de Biostrings, que cuenta la frecuencia de cada base. Luego, sumamos las frecuencias de G y C, dividimos por la longitud total de la secuencia y multiplicamos por 100. Este análisis nos ayuda a identificar posibles diferencias entre variantes relacionadas con su estabilidad o capacidad de replicación.
+
+```{r}
+# porcentajes
+gc_table <- data.frame(
+    variant = names(sequences),
+    gc_percent = rowSums(
+        letterFrequency(sequences, letters = c("G", "C"), as.prob = TRUE)
+    ) * 100
+)
+
+gc_table
+```
+
+## Análisis de complementos
+
+El análisis de complementos implica identificar las secuencias complementarias a las originales usando `comp()` de `seqinr`, como fue visto en clase. Necesitamos convertir las secuencias de `DNAStringSet` a un formato compatible con `seqinr` usando `as.character()`.
+
+La asociación entre cada variante y su secuencia se conserva con `setNames()`, que toma la lista de secuencias convertidas y les asigna los mismos nombres del objeto original. Posteriormente, `names()` recupera esos nombres para usarlos como identificadores en la tabla final.
+
+```{r}
+sequence_vectors <- setNames(
+    lapply(sequences, function(x) strsplit(as.character(x), "")[[1]]),
+    names(sequences)
+)
+
+complement_variants <- data.frame(
+    variant = names(sequence_vectors),
+    complement = vapply(
+        sequence_vectors,
+        function(x) paste(comp(x), collapse = ""),
+        character(1)
+    )
+)
+
+head(complement_variants)
+```
+
+## Interpretación de resultados
+
+### Composición de bases y contenido GC
+
+El análisis reveló una **composición de bases consistente** entre las variantes de SARS-CoV-2, con un sesgo hacia adenina (A) y timina (T), característico de virus ARN. El contenido promedio de GC de 37–38% es **típico para coronavirus** y se mantiene **notablemente estable** entre variantes, sugiriendo presión selectiva conservativa en la composición del genoma viral.
+
+La **baja variabilidad en el porcentaje GC** (rango: 36.37%–38.19% para variantes humanas) indica que, a pesar de las mutaciones puntuales que definen cada variante, **la arquitectura genómica fundamental se mantiene uniforme**. Esto es biológicamente esperado: cambios drásticos en la composición GC podrían afectar la estabilidad del ARN viral y la eficiencia traduccional, ambos críticos para la replicación del virus.
+
+### Longitudes genómicas e integridad de secuencias
+
+Las longitudes genómicas oscilan entre 29,400–29,900 nucleótidos, **consistente con el tamaño típico del genoma SARS-CoV-2** (~30 kb). La **uniformidad en las longitudes** entre variantes confirma que las mutaciones características son principalmente **sustituciones puntuales** y no grandes inserciones o deleciones, coherente con la evolución del virus mediante mutaciones acumulativas.
+
+### Secuencias de referencia y control de calidad
+
+La secuencia `pangolinchina` muestra el **contenido GC más alto** (38.19%), lo cual es esperado dado que representa una **secuencia _outgroup_**, previa al salto interespecie hacia humanos. Esto **valida la calidad del análisis** al mostrar diferenciación clara entre SARS-CoV-2 humano y coronavirus relacionados.
+
+La secuencia `EcuHum`, proveniente de un sujeto en Ecuador, presenta **anomalías consistentes** (menor longitud, menor conteo total de bases, contenido GC atípico), lo que sugiere posibles **gaps o calidad reducida** en esta secuencia particular. Esto debe considerarse en análisis filogenéticos posteriores.
+
+### Implicaciones evolutivas
+
+La **conservación de la composición** entre variantes (Alpha, Beta, Gamma, Delta, Omicron) y otras variantes geográficamente diversas sugiere **restricciones evolutivas fuertes** en la arquitectura del genoma viral, posiblemente relacionadas con la optimización del uso de codones del huésped y la estabilidad estructural del ARN.
+
+---
+
+## Referencias
+
+Bupa Salud. (s.f.). *Variantes de COVID-19, explicadas*. https://www.bupasalud.com/salud/varientes-covid
+
+Charif, D. & Lobry, J. R. (2007). SeqinR 1.0-2: a contributed package to the R project for statistical computing devoted to biological sequences retrieval and analysis. En Bastolla, U., Porto, M., Roman, H. E., & Vendruscolo, M. (Eds.), *Structural approaches to sequence evolution: Molecules, networks, populations* (pp. 207–232). Springer.
+
+Diario Cambio. (2025). *Situación del COVID-19 en Puebla: Casos y avances en la vacunación durante 2025*. https://www.diariocambio.com.mx/2025/puebla/covid-19-puebla-casos-vacunacion-2025/
+
+Eiros, J., & Hernández, M. (2022). La evolución en variantes del SARS-CoV-2 y su repercusión clínica y sanitaria. *Revista Clínica Española*, *222*(7), 414–416. https://doi.org/10.1016/j.rce.2021.12.004
+
+Gaceta Médica. (24 de enero de 2025). *'Covid Frankenstein': así es la nueva cepa que combina variantes*. https://gacetamedica.com/investigacion/covid-frankenstein-nueva-cepa-variante/
+
+Gentleman, R., Carey, V., Huber, W., & Hahne, F. (2024). *Bioconductor: Open software development for computational biology and bioinformatics*. https://www.bioconductor.org/
+
+Harvey, W. T., Carabelli, A. M., Jackson, B., et al. (2021). SARS-CoV-2 variants, spike mutations and immune escape. *Nature Reviews Microbiology*, *19*(7), 409–424.
+
+Khare, S., Gurry, C., Freitas, L., et al. (2021). GISAID's role in pandemic response. *China CDC Weekly*, *3*(49), 1049–1051.
+
+Leite, J. A., Vicari, A., Perez, E., Siqueira, M., Resende, P., Motta, F. C., ... & Mendez-Rico, J. (2022). Implementation of a COVID-19 genomic surveillance regional network for Latin America and Caribbean region. *PLoS One*, *17*(3), e0252526.
+
+Lozano Aponte, J. (Abril 2026). *Análisis de secuencias biológicas con R/Bioconductor* [Clase magistral]. Tecnológico de Monterrey, campus Puebla.
+
+Mayo Clinic. (2024). *Coronavirus (COVID-19): Síntomas y causas*. https://www.mayoclinic.org/es/diseases-conditions/coronavirus/symptoms-causes/syc-20479963
+
+Morales, C. (23 de septiembre de 2025). Puebla es segundo lugar nacional en muertes por coronavirus en 2025. *Telediario*. https://www.telediario.mx/salud/puebla-es-segundo-lugar-nacional-en-muertes-por-coronavirus-en-2025
+
+NCBI Resource Coordinators. (2024). Database resources of the National Center for Biotechnology Information. *Nucleic Acids Research*, *52*(D1), D33–D43.
+
+Organización Panamericana de la Salud. (s.f.). *Página de inicio*. https://www.paho.org/en
+
+Pagès, H., Aboyoun, P., Gentleman, R., & DebRoy, S. (2023). *Biostrings: Efficient manipulation of biological strings*. R package version 2.68.1. Bioconductor.
+
+Portal informativo COVID19. (s.f.). https://previenecovid19.puebla.gob.mx/
+
+Rambaut, A., Holmes, E. C., O'Toole, Á., et al. (2020). A dynamic nomenclature proposal for SARS-CoV-2 lineages to assist genomic epidemiology. *Nature Microbiology*, *5*(11), 1403–1407.
+
+Secretaría de Salud. (2025). *Informes semanales para la vigilancia epidemiológica de influenza, COVID-19 y otros virus respiratorios 2025*. Gobierno de México. https://www.gob.mx/salud/documentos/informes-semanales-para-la-vigilancia-epidemiologica-de-influenza-covid-19-y-otros-virus-respiratorios-2025
+
+Siddiqui, S., Alhamdi, H. W. S., & Alghamdi, H. A. (2022). Recent chronology of COVID-19 pandemic. *Frontiers in Public Health*, *10*, 778037. https://doi.org/10.3389/fpubh.2022.778037
+
+Taboada, B., Zárate, S., Iša, P., Boukadida, C., Vazquez-Perez, J. A., Muñoz-Medina, J. E., ... & Arias, C. F. (2021). Genetic analysis of SARS-CoV-2 variants in Mexico during the first year of the COVID-19 pandemic. *Viruses*, *13*(11), 2161. https://doi.org/10.3390/v13112161
+
+WHO COVID-19 Dashboard. (s.f.). *Summary*. https://data.who.int/dashboards/covid19/summary
+
+Wickham, H. (2016). *ggplot2: Elegant Graphics for Data Analysis*. Springer-Verlag New York.
