@@ -1,5 +1,5 @@
 ---
-title: "Evidencia 1 | Análisis Inicial"
+title: "Evidencia 2 | Proyecto Integrador"
 author: "Biniza Verónica Vázquez Moreno A01737294"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,42 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-source(file.path("..", "classwork", "globalSetup.R"))
+find_global_setup <- function() {
+  input_path <- knitr::current_input()
+  start_dirs <- c()
+
+  if (nzchar(input_path)) {
+    start_dirs <- c(start_dirs, dirname(normalizePath(input_path, mustWork = FALSE)))
+  }
+
+  start_dirs <- c(start_dirs, normalizePath(getwd(), mustWork = FALSE))
+  start_dirs <- unique(start_dirs[nzchar(start_dirs)])
+
+  candidate_dirs <- c()
+  for (start_dir in start_dirs) {
+    candidate_dirs <- c(
+      candidate_dirs,
+      start_dir,
+      file.path(start_dir, ".."),
+      file.path(start_dir, "..", ".."),
+      file.path(start_dir, "..", "..", "..")
+    )
+  }
+
+  candidate_paths <- unique(file.path(candidate_dirs, "classwork", "globalSetup.R"))
+  hits <- candidate_paths[file.exists(candidate_paths)]
+
+  if (!length(hits)) {
+    stop(
+      "Could not locate classwork/globalSetup.R. Tried from: ",
+      paste(start_dirs, collapse = ", ")
+    )
+  }
+
+  hits[[1]]
+}
+
+source(find_global_setup())
 ```
 
 ---
@@ -170,29 +205,17 @@ gc_table <- data.frame(
 gc_table
 ```
 
-## Análisis de complementos
-
-El análisis de complementos implica identificar las secuencias complementarias a las originales usando `comp()` de `seqinr`, como fue visto en clase. Necesitamos convertir las secuencias de `DNAStringSet` a un formato compatible con `seqinr` usando `as.character()`.
-
-La asociación entre cada variante y su secuencia se conserva con `setNames()`, que toma la lista de secuencias convertidas y les asigna los mismos nombres del objeto original. Posteriormente, `names()` recupera esos nombres para usarlos como identificadores en la tabla final.
+## Composición de bases 
 
 ```{r}
-sequence_vectors <- setNames(
-    lapply(sequences, function(x) strsplit(as.character(x), "")[[1]]),
-    names(sequences)
-)
 
-complement_variants <- data.frame(
-    variant = names(sequence_vectors),
-    complement = vapply(
-        sequence_vectors,
-        function(x) paste(comp(x), collapse = ""),
-        character(1)
-    )
-)
-
-head(complement_variants)
 ```
+
+## 
+
+
+
+
 
 ## Interpretación de resultados
 

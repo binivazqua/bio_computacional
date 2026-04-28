@@ -1,6 +1,6 @@
 ---
 title: "FJ26 Actividad colaborativa en clase | Ejercicios de R"
-author: "Biniza Verónica Vázquez Moreno | a01737294, Imanol Benitez Castro | a01821115"
+author: "Biniza Verónica Vázquez Moreno | a01737294"
 date: "`r Sys.Date()`"
 output: html_document
 ---
@@ -230,7 +230,7 @@ rev_complementaria("TGCGATAC")
 
 ## Ejercicio 9
 
-# secuencias de prueba
+### Secuencias de prueba
 sequences <- c(
   "ATG-CNTA",     # válida o invalida
   "NNN---",       # sólo chars no válidos
@@ -238,13 +238,13 @@ sequences <- c(
   "A-TGNCGTA--N"  # mezcla de válidos e inválidos
 )
 
-# Function to print results nicely
+### Función para probar todas las funciones anteriores con cada secuencia de prueba.
 probar_tarea <- function(seq) {
   cat("=====================================\n")
   cat("Sequence:", seq, "\n")
   cat("=====================================\n")
   
-  # dna_length
+  # dna_len
   cat("Length (valid bases only):", dna_length(seq), "\n")
   
   # base_percentage
@@ -255,22 +255,22 @@ probar_tarea <- function(seq) {
     cat("No valid bases found.\n")
   })
   
-  # transcribe_dna
+  # trans
   cat("\nTranscribed RNA:", transcribe_dna(seq), "\n")
   
-  # reverse_strand
+  # rev
   cat("Reversed Strand (3'->5'):", reverse_strand(seq), "\n")
   
-  # complement_strand
+  # comp
   cat("Complement Strand (3'->5'):", complement_strand(seq), "\n")
   
-  # reverse_complement
+  # rev 
   cat("Reverse Complement (5'->3'):", reverse_complement(seq), "\n")
   
   cat("\n\n")
 }
 
-# Run tests on all sequences
+### Test Final
 for (seq in sequences) {
   probar_tarea(seq)
 }
