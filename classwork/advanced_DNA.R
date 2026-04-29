@@ -43,16 +43,26 @@ d1 <- DistanceMatrix(aligned1, correction = "K80", verbose = FALSE)
 
 # Construir árbol filogenético usando hclust para mejor control
 cat("Construyendo árbol (NJ)...\n")
-hc1 <- hclust(as.dist(d1), method = "average")
+hc1 <- hclust(as.dist(d1), method = "centroid")
 tree_phylo <- as.phylo(hc1)
 
 # Visualizar
 cat("Guardando visualización...\n")
-png(file.path(output_dir, "arbol_filogenetico.png"), width = 1400, height = 700)
+png(file.path(output_dir, "arbol_filogenetico.png"), width = 1200, height = 1800, res = 150)
+par(mar = c(3, 6, 5, 3) + 0.1, bg = "#FCFCF8")
 plot.phylo(tree_phylo,
-    direction = "rightwards", cex = 0.7,
+    type = "phylogram",
+    direction = "downwards",
+    use.edge.length = TRUE,
+    cex = 0.75,
+    edge.color = "#d67dff",
+    edge.width = 2.4,
+    tip.color = "steelblue4",
+    label.offset = 0.001,
+    no.margin = FALSE,
     main = "Árbol Filogenético (UPGMA + K80)\n28 variantes SARS-CoV-2"
 )
+axisPhylo(side = 2, col = "#444444", col.axis = "#444444")
 dev.off()
 
 cat("✓ Árbol filogenético guardado: ", file.path(output_dir, "arbol_filogenetico_GOAT.png"), "\n")

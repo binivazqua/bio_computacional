@@ -41,7 +41,7 @@ base_freq <- Biostrings::letterFrequency(
 tabla_bases <- data.frame(
   VarID = paste0("Var", seq_along(sequences)),
   Variante = names(sequences),
-  GC_Content = rowSums(base_freq[, c("G", "C"), drop = FALSE]) * 100,
+  GC_Content = rowSums(base_freqTABLA[, c("G", "C"), drop = FALSE]) * 100,
   AT_Content = rowSums(base_freq[, c("A", "T"), drop = FALSE]) * 100,
   check.names = FALSE
 )
@@ -97,7 +97,7 @@ Se guarda la gráfica en PNG usando `ragg` si está disponible, ya que en este e
 ```{r}
 if (requireNamespace("ragg", quietly = TRUE)) {
   ggplot2::ggsave(
-    filename = "grafica_at.png",
+    filename = "grafica_at_20vars.png",
     plot = p,
     device = ragg::agg_png,
     width = 10,

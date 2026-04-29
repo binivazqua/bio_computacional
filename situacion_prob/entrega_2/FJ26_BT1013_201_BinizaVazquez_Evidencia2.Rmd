@@ -7,102 +7,12 @@ output:
     toc: true
 ---
 
+## Setup Inicial
+
 ```{r setup, include=FALSE}
-find_global_setup <- function() {
-  input_path <- knitr::current_input()
-  start_dirs <- c()
-
-  if (nzchar(input_path)) {
-    start_dirs <- c(start_dirs, dirname(normalizePath(input_path, mustWork = FALSE)))
-  }
-
-  start_dirs <- c(start_dirs, normalizePath(getwd(), mustWork = FALSE))
-  start_dirs <- unique(start_dirs[nzchar(start_dirs)])
-
-  candidate_dirs <- c()
-  for (start_dir in start_dirs) {
-    candidate_dirs <- c(
-      candidate_dirs,
-      start_dir,
-      file.path(start_dir, ".."),
-      file.path(start_dir, "..", ".."),
-      file.path(start_dir, "..", "..", "..")
-    )
-  }
-
-  candidate_paths <- unique(file.path(candidate_dirs, "classwork", "globalSetup.R"))
-  hits <- candidate_paths[file.exists(candidate_paths)]
-
-  if (!length(hits)) {
-    stop(
-      "Could not locate classwork/globalSetup.R. Tried from: ",
-      paste(start_dirs, collapse = ", ")
-    )
-  }
-
-  hits[[1]]
-}
-
-source(find_global_setup())
+setwd("/Users/binivazquez/UniWorkspace/computational_biology")
+source("classwork/globalSetup.R")
 ```
-
----
-
-## Parte 1: Investigación sobre COVID-19
-
-### ¿Cuál es la situación actual de COVID-19 a nivel mundial?
-
-#### A nivel mundial
-
-En el período del 16 de febrero al 15 de marzo de 2026, un total de 80 países reportaron 38,516 nuevos casos de COVID-19 a la OMS, una cifra menor comparada con los 50,752 casos del período anterior. Trece países de África, América y Europa registraron incrementos superiores al 10% (WHO COVID-19 Dashboard, s.f.). La variante XFG es actualmente la más prevalente a nivel global, representando el 50.8% de las secuencias analizadas en la semana del 8 de marzo de 2026. En general, el virus sigue circulando pero a niveles significativamente menores que durante la pandemia.
-
-La variante más reciente del virus es la Stratus, reportada a finales de 2025, la cual ha producido olas de infección menores, caracterizadas por rasgos acumulativos de inmunidad híbrida.
-
-De manera más específica, en la ventana de 28 días con corte al 22 de febrero de 2026, la OMS documentó 5,295 hospitalizaciones, 211 internamientos en terapia intensiva y 1,540 muertes. Se estima que el 89% de estos decesos ocurrió en pacientes mayores de 65 años. Esto confirma que el COVID-19 ha evolucionado hasta convertirse en una enfermedad de temporada que amenaza principalmente a los sectores poblacionales más vulnerables.
-
-#### En México
-
-México registró 7,186 casos confirmados de COVID-19 y 268 defunciones con corte a la semana epidemiológica 49 de 2025, según la Dirección General de Epidemiología (Secretaría de Salud, 2025). El virus continúa activo pero dentro de niveles controlados y bajo vigilancia continua junto con influenza y otros virus respiratorios.
-
-#### En el estado de Puebla
-
-Al corte del 15 de septiembre de 2025, Puebla acumulaba 384 casos positivos con una tasa de letalidad del 4.4%, siendo el segundo estado con más muertes por COVID-19 en el país en ese año, con 17 defunciones que representan el 7.7% del total nacional (Morales, 2025). Para diciembre de 2025, la Secretaría de Salud de Puebla reportó 414 casos activos y 19 defunciones asociadas al virus durante la temporada invernal, con más de 111,717 dosis de vacuna aplicadas en el año (Diario Cambio, 2025).
-
----
-
-### Primera variante que se propagó al mundo
-
-La primera variante reconocida oficialmente fue la variante **Alfa** (B.1.1.7), que surgió en septiembre de 2020 en el Reino Unido y fue designada como variante de preocupación el 18 de diciembre de 2020 (Eiros y Hernández, 2022). El genoma de referencia Wuhan-Hu-1 (GenBank MN908947), con 29,903 nucleótidos, fue liberado al mundo por Zhang Yongzhen el 10 de enero de 2020 vía el sitio virological.org.
-
-La mutación D614G de la proteína Spike se extendió por todo el mundo en la primavera de 2020 (representando más del 93% de las secuencias latinoamericanas a finales de ese año, según Leite et al., 2022), y definió el linaje B.1. A continuación, la OMS designó cinco variantes de preocupación: Alfa (B.1.1.7, Reino Unido, septiembre de 2020), Beta (B.1.351, Sudáfrica, mayo de 2020), Gamma (P.1, Brasil/Japón, noviembre de 2020), Delta (B.1.617.2, India, octubre de 2020) y Ómicron (B.1.1.529, Sudáfrica/Botsuana, noviembre de 2021) (Siddiqui et al., 2022).
-
----
-
-### Otras variantes en el mundo
-
-A lo largo de la pandemia se han designado 13 variantes principales con letras del alfabeto griego: Alfa, Beta, Gamma, Delta, Épsilon, Dseta, Eta, Zeta, Iota, Kappa, Lambda, Mu y Ómicron (Bupa Salud, s.f.). De estas, Ómicron fue la más significativa por su alta transmisibilidad y sus múltiples sublinajes. En 2026, la variante predominante es la **XFG**, que actualmente lidera la circulación en Estados Unidos y otros países (Gaceta Médica, 2025).
-
----
-
-### ¿Cómo buscar información sobre variantes en tu país?
-
-Puebla no cuenta con un control público específico para las variantes; sus datos se incorporan al conjunto nacional de **CoViGen-Mex** en la plataforma COVID-TRACKER. En total, México ha secuenciado 94,799 genomas hasta septiembre de 2024, lo que representa aproximadamente el 2% de los casos confirmados, cifra que está muy por debajo del umbral del 5% recomendado por la OMS. Esto ha significado que la detección de variantes emergentes en México se ha retrasado de forma consistente (Taboada et al., 2021).
-
----
-
-### ¿Qué harías en el caso de Li Wenliang?
-
-> **Opción elegida:** Reportarlo al centro de investigación o la universidad.
-
-Si me encontrara en una situación similar a la del Dr. Li Wenliang, elegiría reportar el brote al centro de investigación o la universidad. Mi razonamiento parte de asumir que me ubico en un contexto donde el gobierno no intentaría silenciarme. Guardar la información implicaría poner en riesgo a gran parte de la población, ya que un virus de transmisión respiratoria podría propagarse rápidamente. Revelarla directamente a la prensa presenta dos riesgos: que la población entre en pánico afectando una respuesta coordinada, o bien que ignore la advertencia. Lo más sensato es canalizarla a un centro de investigación o universidad, donde equipos especializados puedan estudiar el patógeno y buscar una solución de forma sistemática y fundamentada.
-
----
-
-## Parte 2: Análisis de secuencias en R
-
-## Preparación del entorno de desarrollo
-
-Para este análisis se añadieron las librerías requeridas como fue visto en clase y se reutilizó el archivo compartido `globalSetup.R`, el cual centraliza la carga de paquetes y la definición de rutas de trabajo. De esta forma, el reporte queda más limpio y evita repetir un bloque largo de configuración dentro del documento.
 
 ## Carga de secuencias
 
@@ -189,31 +99,119 @@ ggsave(
 )
 ```
 
-## Cálculo del porcentaje de GC
 
-El porcentaje de GC indica la proporción de bases guanina (G) y citosina (C) en una secuencia. Para calcularlo, utilizamos la función `letterFrequency()` de Biostrings, que cuenta la frecuencia de cada base. Luego, sumamos las frecuencias de G y C, dividimos por la longitud total de la secuencia y multiplicamos por 100. Este análisis nos ayuda a identificar posibles diferencias entre variantes relacionadas con su estabilidad o capacidad de replicación.
+## Análisis de composición de bases y contenido AT y GC
+Calculamos el porcentaje de GC y AT para cada secuencia utilizando la función `letterFrequency()` de Biostrings, que cuenta la frecuencia de cada base en las secuencias. Luego, se crea una tabla con esta información para facilitar su análisis y visualización.
 
 ```{r}
-# porcentajes
-gc_table <- data.frame(
-    variant = names(sequences),
-    gc_percent = rowSums(
-        letterFrequency(sequences, letters = c("G", "C"), as.prob = TRUE)
-    ) * 100
+base_freq <- Biostrings::letterFrequency(
+    sequences,
+    letters = c("A", "C", "G", "T"),
+    as.prob = TRUE
 )
 
-gc_table
+tabla_bases <- data.frame(
+    VarID = paste0("Var", seq_along(sequences)),
+    Variante = names(sequences),
+    GC_Content = rowSums(base_freq[, c("G", "C"), drop = FALSE]) * 100,
+    AT_Content = rowSums(base_freq[, c("A", "T"), drop = FALSE]) * 100,
+    check.names = FALSE
+)
+
+tabla_bases
 ```
 
-## Composición de bases 
+Y graficamos con ayuda de `ggplot2` el contenido de AT y CG por variante, usando la etiqueta corta `VarN` para que los nombres largos no oculten la visualización.
+
+#### Gráfico de contenido AT por variante
+```{r}
+p <- ggplot(
+    tabla_bases,
+    aes(x = VarID, y = AT_Content, fill = VarID)
+) +
+    geom_col() +
+    theme_minimal() +
+    labs(
+        title = "Contenido de Adenina y Timina por Variante",
+        x = "Variante",
+        y = "Contenido AT (%)"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+p <- p + scale_fill_hue(guide = "none")
+print(p)
+```
+
+#### Gráfico de contenido GC por variante
+```{r}
+p <- ggplot(
+    tabla_bases,
+    aes(x = VarID, y = GC_Content, fill = VarID)
+) +
+    geom_col() +
+    theme_minimal() +
+    labs(
+        title = "Contenido de Citosina y Guanina por Variante",
+        x = "Variante",
+        y = "Contenido CG (%)"
+    ) +
+    theme(axis.text.x = element_text(angle = 45, hjust = 1))
+p <- p + scale_fill_hue(guide = "none")
+print(p)
+```
+
+## Árbol Filogenético en DECIPHER
+
+Para construir un árbol filogenético de las secuencias, se utiliza la función `AlignSeqs()` de DECIPHER para alinear las secuencias y luego `DistanceMatrix()` para calcular la matriz de distancias entre ellas. Esto nos permitirá visualizar las relaciones evolutivas entre las variantes del SARS-CoV-2.
+Adicionalmente, se emplea `hclust()` para construir el árbol filogenético a partir de la matriz de distancias, utilizando el método de agrupamiento promedio (average) para obtener una representación clara de las relaciones entre las secuencias.
+
+Para agregar un estilo visual atractivo al árbol, se personalizan los parámetros de la función `plot.phylo()`, como el tipo de árbol (phylogram), la dirección (downwards), colores de las ramas y tips, y se añade un título descriptivo. Esto facilita la interpretación visual de las relaciones evolutivas entre las variantes del virus.
+La función `par()` se utiliza para ajustar los márgenes y el fondo del gráfico, mejorando la estética general del árbol filogenético.
 
 ```{r}
+aligned <- AlignSeqs(sequences, verbose = FALSE)
+d <- DistanceMatrix(aligned, correction = "K80", verbose = FALSE)
 
+hc1 <- hclust(as.dist(d), method = "average")
+tree_phylo <- as.phylo(hc1)
+
+par(mar = c(3, 6, 5, 3) + 0.1, bg = "#FCFCF8")
+plot.phylo(tree_phylo,
+    type = "phylogram",
+    direction = "downwards",
+    use.edge.length = TRUE,
+    cex = 0.75,
+    edge.color = "#d67dff",
+    edge.width = 2.4,
+    tip.color = "steelblue4",
+    label.offset = 0.001,
+    no.margin = FALSE,
+    main = "Árbol Filogenético (UPGMA + K80)\n28 variantes SARS-CoV-2"
+)
+axisPhylo(side = 2, col = "#444444", col.axis = "#444444")
 ```
 
-## 
+## Árbol Filogenético estilo MSA
+Se sigue un proceso similar al anterior, pero utilizando la función `nj()` de Biostrings para alinear las secuencias antes de calcular la matriz de distancias y construir el árbol filogenético. Esto nos permitirá comparar los resultados obtenidos con DECIPHER y evaluar la consistencia entre ambos métodos.
+Se omitió el uso de msa debido a su alto costo computacional, lo que resultó en tiempos de ejecución excesivos. En su lugar, se utilizó la función `AlignSeqs()` de DECIPHER para alinear las secuencias, seguida de `dist.dna()` para calcular la matriz de distancias y `nj()` para construir el árbol filogenético. Esto permitió obtener resultados óptimos de manera más eficiente sin comprometer la calidad del análisis filogenético.
 
+```{r}
+seqs <- readDNAStringSet("classwork/assets/secuencias_fasta/all_arn_sequences_CLEAN.fasta")
+aln <- AlignSeqs(seqs, verbose = FALSE)
 
+dna_bin <- as.DNAbin(as.matrix(aln))
+d <- dist.dna(dna_bin, model = "K80")
+tree <- nj(d)
+plot.phylo(tree,
+    type = "phylogram",
+    direction = "rightwards",
+    use.edge.length = FALSE,
+    cex = 0.7,
+    label.offset = 0.0005,
+    edge.width = 2,
+    main = "Árbol Filogenético (UPGMA + K80)\n28 variantes SARS-CoV-2"
+)
+axisPhylo(side = 2, col = "#d67dff", col.axis = "#d67dff")
+```
 
 
 
