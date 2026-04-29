@@ -217,41 +217,65 @@ axisPhylo(side = 2, col = "#d67dff", col.axis = "#d67dff")
 
 ## Interpretación de resultados
 
+### Hallazgos principales
+
+1. Las secuencias muestran longitudes similares y consistentes con el genoma típico de SARS-CoV-2, (un rango de 29,400–29,900 nucleótidos), lo que sugiere una estabilidad genómica del virus.
+
+2. Existe una variación mínima entre variantes (máximo 300 nucleótidos de diferencia), lo que sugiere evolución reciente.
+
+3. Lo anterior es un indicador de adaptaciones evolutivas principalmente a través de sustituciones puntuales, sin grandes _inserciones_ o _deleciones_, lo que es típico en la evolución de virus ARN.
+
+
 ### Composición de bases y contenido GC
 
 El análisis reveló una **composición de bases consistente** entre las variantes de SARS-CoV-2, con un sesgo hacia adenina (A) y timina (T), característico de virus ARN. El contenido promedio de GC de 37–38% es **típico para coronavirus** y se mantiene **notablemente estable** entre variantes, sugiriendo presión selectiva conservativa en la composición del genoma viral.
 
 La **baja variabilidad en el porcentaje GC** (rango: 36.37%–38.19% para variantes humanas) indica que, a pesar de las mutaciones puntuales que definen cada variante, **la arquitectura genómica fundamental se mantiene uniforme**. Esto es biológicamente esperado: cambios drásticos en la composición GC podrían afectar la estabilidad del ARN viral y la eficiencia traduccional, ambos críticos para la replicación del virus.
 
-### Longitudes genómicas e integridad de secuencias
+### Árboles filogenéticos
 
-Las longitudes genómicas oscilan entre 29,400–29,900 nucleótidos, **consistente con el tamaño típico del genoma SARS-CoV-2** (~30 kb). La **uniformidad en las longitudes** entre variantes confirma que las mutaciones características son principalmente **sustituciones puntuales** y no grandes inserciones o deleciones, coherente con la evolución del virus mediante mutaciones acumulativas.
+#### Observaciones:
 
-### Secuencias de referencia y control de calidad
+1. Ramas cortas: Distancias evolutivas mínimas entre variantes.
+2. Agrupamientos: No se observaron aglomeraciones por región geográfica (por ejemplo: USA_WT, CHN_WT).
+3. Topología: Existe una estructura clara.
+4. Consistencia: Ambos métodos (DECIPHER y Biostrings) muestran patrones similares, lo que refuerza la validez de los resultados.
 
-La secuencia `pangolinchina` muestra el **contenido GC más alto** (38.19%), lo cual es esperado dado que representa una **secuencia _outgroup_**, previa al salto interespecie hacia humanos. Esto **valida la calidad del análisis** al mostrar diferenciación clara entre SARS-CoV-2 humano y coronavirus relacionados.
 
-La secuencia `EcuHum`, proveniente de un sujeto en Ecuador, presenta **anomalías consistentes** (menor longitud, menor conteo total de bases, contenido GC atípico), lo que sugiere posibles **gaps o calidad reducida** en esta secuencia particular. Esto debe considerarse en análisis filogenéticos posteriores.
+El árbol filogenético muestra que todas las variantes del SARS-CoV-2 provienen de un ancestro común, con la secuencia original de Wuhan como el punto de partida evolutivo. Las ramas muy cortas entre las diferentes variantes (distancias menores a 0.02) nos confirman que este virus apareció hace muy poco tiempo, alrededor de 2019-2020.
 
-### Implicaciones evolutivas
+La estructura del árbol sugiere una propagación global rápida desde Wuhan, China. Esto provocó un desarrollo de variantes propias de cada región geográfica.
+Esto lo podemos ver porque las secuencias tienden a agruparse _sólo parcialmente_ según su origen geográfico (estadounidenses, chinas, italianas, etc.).
 
-La **conservación de la composición** entre variantes (Alpha, Beta, Gamma, Delta, Omicron) y otras variantes geográficamente diversas sugiere **restricciones evolutivas fuertes** en la arquitectura del genoma viral, posiblemente relacionadas con la optimización del uso de codones del huésped y la estabilidad estructural del ARN.
+Aunque existan múltiples variantes, existe una baja variabilidad genética entre ellas. Es decir, la evolución del virus ha sido relativamente lenta, comparada con otros virus. Duchêne et al. (2020)
+Ademásm, esta baja _divergencia genética_ entre variantes geográficamente distantes,indica que la expansión global ocurrió en una ventana temporal muy estrecha, consistente con el periodo de evolución de la pandemia.
+
+
+### Conclusiones 
+
+1. **Evolución conservativa**: El SARS-CoV-2 muestra una tasa evolutiva moderada 
+   con mantenimiento de su composición genómica base.
+
+2. **Dispersión rápida**: La topología (jerarquía) filogenética confirma la transmisión 
+   intercontinental acelerada durante el periodo 2019-2020.
+
+3. **Adaptación local**: Evidencia de evolución independiente en diferentes 
+   poblaciones geográficas sin divergencia extrema.
+
+4. **Estabilidad funcional**: La conservación composicional sugiere 
+   restricciones funcionales que han limitado su variabilidad evolutiva.
+
+5. **Origen único confirmado**: Todos los linajes analizados derivan de un 
+   ancestro común reciente: _Wuhan-Hu-1_.
+
 
 ---
 
 ## Referencias
 
-Bupa Salud. (s.f.). *Variantes de COVID-19, explicadas*. https://www.bupasalud.com/salud/varientes-covid
-
 Charif, D. & Lobry, J. R. (2007). SeqinR 1.0-2: a contributed package to the R project for statistical computing devoted to biological sequences retrieval and analysis. En Bastolla, U., Porto, M., Roman, H. E., & Vendruscolo, M. (Eds.), *Structural approaches to sequence evolution: Molecules, networks, populations* (pp. 207–232). Springer.
 
-Diario Cambio. (2025). *Situación del COVID-19 en Puebla: Casos y avances en la vacunación durante 2025*. https://www.diariocambio.com.mx/2025/puebla/covid-19-puebla-casos-vacunacion-2025/
-
 Eiros, J., & Hernández, M. (2022). La evolución en variantes del SARS-CoV-2 y su repercusión clínica y sanitaria. *Revista Clínica Española*, *222*(7), 414–416. https://doi.org/10.1016/j.rce.2021.12.004
-
-Gaceta Médica. (24 de enero de 2025). *'Covid Frankenstein': así es la nueva cepa que combina variantes*. https://gacetamedica.com/investigacion/covid-frankenstein-nueva-cepa-variante/
-
-Gentleman, R., Carey, V., Huber, W., & Hahne, F. (2024). *Bioconductor: Open software development for computational biology and bioinformatics*. https://www.bioconductor.org/
 
 Harvey, W. T., Carabelli, A. M., Jackson, B., et al. (2021). SARS-CoV-2 variants, spike mutations and immune escape. *Nature Reviews Microbiology*, *19*(7), 409–424.
 
@@ -259,11 +283,7 @@ Khare, S., Gurry, C., Freitas, L., et al. (2021). GISAID's role in pandemic resp
 
 Leite, J. A., Vicari, A., Perez, E., Siqueira, M., Resende, P., Motta, F. C., ... & Mendez-Rico, J. (2022). Implementation of a COVID-19 genomic surveillance regional network for Latin America and Caribbean region. *PLoS One*, *17*(3), e0252526.
 
-Lozano Aponte, J. (Abril 2026). *Análisis de secuencias biológicas con R/Bioconductor* [Clase magistral]. Tecnológico de Monterrey, campus Puebla.
-
 Mayo Clinic. (2024). *Coronavirus (COVID-19): Síntomas y causas*. https://www.mayoclinic.org/es/diseases-conditions/coronavirus/symptoms-causes/syc-20479963
-
-Morales, C. (23 de septiembre de 2025). Puebla es segundo lugar nacional en muertes por coronavirus en 2025. *Telediario*. https://www.telediario.mx/salud/puebla-es-segundo-lugar-nacional-en-muertes-por-coronavirus-en-2025
 
 NCBI Resource Coordinators. (2024). Database resources of the National Center for Biotechnology Information. *Nucleic Acids Research*, *52*(D1), D33–D43.
 
