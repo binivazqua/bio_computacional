@@ -213,7 +213,8 @@ plot.phylo(tree,
 axisPhylo(side = 2, col = "#d67dff", col.axis = "#d67dff")
 ```
 
-
+## Link al video de análisis de resultados:
+[Video de análisis de resultados](https://youtu.be/t_c6OVo0UwU)
 
 ## Interpretación de resultados
 
